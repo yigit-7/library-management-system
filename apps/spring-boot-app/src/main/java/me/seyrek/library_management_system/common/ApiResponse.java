@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.seyrek.library_management_system.exception.ApiError;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class ApiResponse<T> {
 
     private boolean success;
-    private LocalDateTime timestamp;
+    private Instant timestamp;
     private String message;
     private T data;
     private ApiError error;
@@ -26,7 +26,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success(T data) {
         return ApiResponse.<T>builder()
                 .success(true)
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .data(data)
                 .build();
     }
@@ -35,7 +35,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success() {
         return ApiResponse.<T>builder()
                 .success(true)
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .build();
     }
 
@@ -43,7 +43,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success(String message) {
         return ApiResponse.<T>builder()
                 .success(true)
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .message(message)
                 .build();
     }
@@ -52,7 +52,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> failure(ApiError error) {
         return ApiResponse.<T>builder()
                 .success(false)
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .error(error)
                 .build();
     }
