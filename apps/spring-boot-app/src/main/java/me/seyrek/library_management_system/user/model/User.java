@@ -36,8 +36,4 @@ public class User extends BaseEntity {
     )
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
-
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
 }
