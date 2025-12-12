@@ -1,19 +1,15 @@
 package me.seyrek.library_management_system.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.seyrek.library_management_system.common.ApiResponse;
-import me.seyrek.library_management_system.security.SecurityUser;
-import me.seyrek.library_management_system.user.dto.UserDto;
+import me.seyrek.library_management_system.security.utils.SecurityUtils;
+import me.seyrek.library_management_system.user.dto.UserEditProfileRequest;
+import me.seyrek.library_management_system.user.dto.UserEditProfileResponse;
+import me.seyrek.library_management_system.user.dto.UserPrivateProfile;
+import me.seyrek.library_management_system.user.dto.UserPublicProfile;
 import me.seyrek.library_management_system.user.service.UserService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,22 +18,18 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/me/profile")
-    ApiResponse<UserDto> getMyProfile(@AuthenticationPrincipal SecurityUser securityUser) {
-        return ApiResponse.success(userService.findUserById(securityUser.getUser().getId()));
+    @GetMapping("/me")
+    public ApiResponse<UserPrivateProfile> getMyProfile() {
+        return ApiResponse.success(userService.findPrivateProfile(SecurityUtils.getCurrentUserId()));
     }
 
-    @GetMapping("/{id}/profile")
-    ApiResponse<UserDto> getUserById(@PathVariable Long id) {
-        return ApiResponse.success(userService.findUserById(id));
+    @PutMapping("/me")
+    public ApiResponse<UserEditProfileResponse> editMyProfile(@Valid @RequestBody UserEditProfileRequest request) {
+        return ApiResponse.success(userService.editProfile(SecurityUtils.getCurrentUserId(), request));
     }
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    ApiResponse<Page<UserDto>> getAllUsers(
-            @PageableDefault(size = 20, sort = "id")
-            Pageable pageable
-    ) {
-        return ApiResponse.success(userService.findAllUsers(pageable));
+    @GetMapping("/{id}")
+    public ApiResponse<UserPublicProfile> getUserPublicProfile(@PathVariable Long id) {
+        return ApiResponse.success(userService.findPublicProfile(id));
     }
 }
