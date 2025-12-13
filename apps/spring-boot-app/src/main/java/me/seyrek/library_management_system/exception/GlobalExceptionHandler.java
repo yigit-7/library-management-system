@@ -74,13 +74,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             MalformedJwtException.class,
             SignatureException.class,
-            UnsupportedJwtException.class,
-            IllegalArgumentException.class
+            UnsupportedJwtException.class
     })
     public ResponseEntity<ApiResponse<Void>> handleInvalidJwtException(Exception ex) {
         log.warn("Invalid JWT: {}", ex.getMessage());
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
         ApiError apiError = new ApiError(errorCode, "Invalid token.");
+        return buildErrorResponse(errorCode, apiError);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Illegal argument: {}", ex.getMessage());
+        ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
+        ApiError apiError = new ApiError(errorCode, ex.getMessage());
         return buildErrorResponse(errorCode, apiError);
     }
 

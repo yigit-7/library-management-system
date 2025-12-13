@@ -77,8 +77,7 @@ public class JpaUserService implements UserService {
     @Transactional
     public UserEditProfileResponse editProfile(Long id, UserEditProfileRequest request) {
         var user = findUserByIdOrThrow(id);
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
+        userMapper.updateUserFromEditProfileRequest(request, user);
         return userMapper.toUserEditProfileResponse(userRepository.save(user));
     }
 
@@ -89,12 +88,9 @@ public class JpaUserService implements UserService {
 
         if (!user.getEmail().equals(request.email())) {
             validateEmailIsAvailable(request.email());
-            user.setEmail(request.email());
         }
-
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
-        user.setRoles(request.roles());
+        
+        userMapper.updateUserFromRequest(request, user);
 
         return userMapper.toUserUpdateResponse(userRepository.save(user));
     }
