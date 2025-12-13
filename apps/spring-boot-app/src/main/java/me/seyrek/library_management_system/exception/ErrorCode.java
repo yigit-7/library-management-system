@@ -42,11 +42,16 @@ public enum ErrorCode {
     // =====================================================================
     USER_NOT_FOUND("E1001", "User not found", HttpStatus.NOT_FOUND),
     EMAIL_ALREADY_EXISTS("E1002", "Email already exists", HttpStatus.CONFLICT), // Fixed ID conflict
-    REFRESH_TOKEN_NOT_FOUND("E1003", "Refresh token not found", HttpStatus.NOT_FOUND);
+    REFRESH_TOKEN_NOT_FOUND("E1003", "Refresh token not found", HttpStatus.NOT_FOUND),
 
     // =====================================================================
     // 5. BUSINESS LOGIC - LIBRARY DOMAIN (E4xxx)
     // =====================================================================
+    AUTHOR_NOT_FOUND("E4001", "Author not found", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_FOUND("E4002", "Category not found", HttpStatus.NOT_FOUND),
+    BOOK_NOT_FOUND("E4003", "Book not found", HttpStatus.NOT_FOUND),
+    BOOK_ALREADY_EXISTS("E4004", "Book with this ISBN already exists", HttpStatus.CONFLICT);
+
 
     private final String code;
     private final String message;
