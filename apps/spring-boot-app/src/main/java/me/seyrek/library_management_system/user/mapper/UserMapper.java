@@ -5,6 +5,7 @@ import me.seyrek.library_management_system.user.dto.*;
 import me.seyrek.library_management_system.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -27,4 +28,14 @@ public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
     User toUser(UserCreateRequest request);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    void updateUserFromEditProfileRequest(UserEditProfileRequest request, @MappingTarget User user);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    void updateUserFromRequest(UserUpdateRequest request, @MappingTarget User user);
 }
