@@ -3,7 +3,7 @@ package me.seyrek.library_management_system.auth.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.seyrek.library_management_system.user.model.User;
 import org.hibernate.annotations.OnDelete;
@@ -12,7 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.Instant;
 
 @Entity
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
