@@ -31,7 +31,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<AuthorDto> getAllAuthors(Pageable pageable) {
+    public Page<AuthorDto> getAllAuthors(String name, Pageable pageable) {
+        if (name != null && !name.isBlank()) {
+            return authorRepository.findByNameIsContainingIgnoreCase(name, pageable)
+                    .map(authorMapper::toAuthorDto);
+        }
         return authorRepository.findAll(pageable)
                 .map(authorMapper::toAuthorDto);
     }
