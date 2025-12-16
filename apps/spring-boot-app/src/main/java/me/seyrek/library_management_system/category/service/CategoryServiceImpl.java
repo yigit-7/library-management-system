@@ -31,7 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CategoryDto> getAllCategories(Pageable pageable) {
+    public Page<CategoryDto> getCategories(String name, Pageable pageable) {
+        if (name != null && !name.isBlank()) {
+            return categoryRepository.findByNameIsContainingIgnoreCase(name, pageable)
+                    .map(categoryMapper::toCategoryDto);
+        }
         return categoryRepository.findAll(pageable)
                 .map(categoryMapper::toCategoryDto);
     }
@@ -46,6 +50,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto createCategory(CategoryCreateRequest request) {
+        if (categoryRepository.existsByName(request.name())) {
+            throw new BusinessException("Category with name '" + request.name() + "' already exists.", ErrorCode.CATEGORY_ALREADY_EXISTS);
+        }
+
         Category category = categoryMapper.fromCategoryCreateRequest(request);
         return categoryMapper.toCategoryDto(categoryRepository.save(category));
     }
