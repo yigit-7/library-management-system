@@ -1,6 +1,7 @@
 package me.seyrek.library_management_system.book.mapper;
 
 import me.seyrek.library_management_system.author.mapper.AuthorMapper;
+import me.seyrek.library_management_system.book.annotation.ToBookEntity;
 import me.seyrek.library_management_system.book.dto.BookCreateRequest;
 import me.seyrek.library_management_system.book.dto.BookDto;
 import me.seyrek.library_management_system.book.dto.BookPatchRequest;
@@ -21,5 +22,5 @@ public interface BookMapper {
 
     @ToBookEntity
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateBookFromPatch(BookPatchRequest request, @MappingTarget Book book);
+    void patchBookFromRequest(BookPatchRequest request, @MappingTarget Book book);
 }
