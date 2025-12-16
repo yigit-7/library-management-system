@@ -19,7 +19,7 @@ public record BookUpdateRequest(
         String title,
 
         @NotBlank(message = "Description cannot be blank")
-        @Size(max = 1000, message = "Description can be at most 1000 characters")
+        @Size(max = 5000, message = "Description can be at most 1000 characters")
         String description,
 
         @NotBlank(message = "Cover image URL cannot be blank")

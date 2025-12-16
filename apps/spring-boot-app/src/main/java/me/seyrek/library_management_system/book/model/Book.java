@@ -9,10 +9,12 @@ import lombok.Getter;
 import lombok.Setter;
 import me.seyrek.library_management_system.author.model.Author;
 import me.seyrek.library_management_system.category.model.Category;
+import me.seyrek.library_management_system.copy.model.Copy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -49,9 +51,12 @@ public class Book {
     private Set<Author> authors;
 
     @NotNull(message = "Category cannot be null")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "book", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Copy> copies;
 
     @PrePersist
     @PreUpdate

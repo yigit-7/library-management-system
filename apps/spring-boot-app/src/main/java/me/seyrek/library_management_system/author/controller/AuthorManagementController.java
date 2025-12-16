@@ -7,10 +7,11 @@ import me.seyrek.library_management_system.author.dto.AuthorUpdateRequest;
 import me.seyrek.library_management_system.author.service.AuthorService;
 import me.seyrek.library_management_system.common.ApiResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/management/authors")
+@RequestMapping("/api/management/authors")
 @PreAuthorize("hasRole('ADMIN')")
 public class AuthorManagementController {
 
@@ -21,6 +22,7 @@ public class AuthorManagementController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<AuthorDto> createAuthor(@Valid @RequestBody AuthorCreateRequest request) {
         return ApiResponse.success(authorService.createAuthor(request));
     }

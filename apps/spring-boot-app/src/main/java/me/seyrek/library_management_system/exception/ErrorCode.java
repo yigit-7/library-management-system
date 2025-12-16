@@ -50,8 +50,11 @@ public enum ErrorCode {
     AUTHOR_NOT_FOUND("E4001", "Author not found", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_FOUND("E4002", "Category not found", HttpStatus.NOT_FOUND),
     BOOK_NOT_FOUND("E4003", "Book not found", HttpStatus.NOT_FOUND),
-    BOOK_ALREADY_EXISTS("E4004", "Book with this ISBN already exists", HttpStatus.CONFLICT);
-
+    BOOK_ALREADY_EXISTS("E4004", "Book with this ISBN already exists", HttpStatus.CONFLICT),
+    COPY_NOT_FOUND("E4005", "Copy not found", HttpStatus.NOT_FOUND),
+    COPY_ALREADY_EXISTS("E4006", "Copy with this barcode already exists", HttpStatus.CONFLICT),
+    LOAN_STATUS_MODIFICATION_FORBIDDEN("E4008", "Loan status cannot be modified manually.", HttpStatus.BAD_REQUEST),
+    CATEGORY_ALREADY_EXISTS("E4009", "Category with this name already exists", HttpStatus.CONFLICT);
 
     private final String code;
     private final String message;

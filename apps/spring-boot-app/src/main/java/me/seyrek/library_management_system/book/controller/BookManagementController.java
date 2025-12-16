@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/management/books")
+@RequestMapping("/api/management/books")
 @PreAuthorize("hasRole('ADMIN')")
 public class BookManagementController {
 
@@ -37,8 +37,8 @@ public class BookManagementController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteBook(@PathVariable Long id) {
+    public ApiResponse<String> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
-        return ApiResponse.success("Book deleted successfully");
+        return ApiResponse.success("Book with ID " + id + " has been successfully deleted");
     }
 }
