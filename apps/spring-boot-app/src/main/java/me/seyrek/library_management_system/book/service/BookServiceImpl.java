@@ -3,20 +3,21 @@ package me.seyrek.library_management_system.book.service;
 import lombok.RequiredArgsConstructor;
 import me.seyrek.library_management_system.author.model.Author;
 import me.seyrek.library_management_system.author.repository.AuthorRepository;
-import me.seyrek.library_management_system.book.dto.BookCreateRequest;
-import me.seyrek.library_management_system.book.dto.BookDto;
-import me.seyrek.library_management_system.book.dto.BookPatchRequest;
-import me.seyrek.library_management_system.book.dto.BookUpdateRequest;
+import me.seyrek.library_management_system.book.dto.*;
 import me.seyrek.library_management_system.book.mapper.BookMapper;
 import me.seyrek.library_management_system.book.model.Book;
 import me.seyrek.library_management_system.book.repository.BookRepository;
+import me.seyrek.library_management_system.book.repository.BookSpecification;
 import me.seyrek.library_management_system.category.model.Category;
 import me.seyrek.library_management_system.category.repository.CategoryRepository;
+import me.seyrek.library_management_system.copy.repository.CopyRepository;
 import me.seyrek.library_management_system.exception.ErrorCode;
+import me.seyrek.library_management_system.exception.client.BusinessException;
 import me.seyrek.library_management_system.exception.client.DuplicateResourceException;
 import me.seyrek.library_management_system.exception.client.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -34,12 +35,19 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    private final CopyRepository copyRepository;
     private final BookMapper bookMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<BookDto> getAllBooks(Pageable pageable) {
-        return bookRepository.findAll(pageable)
+    public Page<BookDto> getAllBooks(BookSearchRequest request, Pageable pageable) {
+        Specification<Book> spec = BookSpecification.withDynamicQuery(
+                request.isbn(),
+                request.title(),
+                request.authorName(),
+                request.categoryName()
+        );
+        return bookRepository.findAll(spec, pageable)
                 .map(bookMapper::toBookDto);
     }
 
@@ -85,7 +93,7 @@ public class BookServiceImpl implements BookService {
     public BookDto patchBook(Long id, BookPatchRequest request) {
         Book existingBook = findBookByIdOrThrow(id);
 
-        bookMapper.updateBookFromPatch(request, existingBook);
+        bookMapper.patchBookFromRequest(request, existingBook);
 
         Optional.ofNullable(request.isbn()).ifPresent(isbn -> {
             String normalizedIsbn = normalizeIsbn(isbn);
@@ -104,12 +112,18 @@ public class BookServiceImpl implements BookService {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book not found with id: " + id, ErrorCode.BOOK_NOT_FOUND);
         }
+
+        boolean hasCopies = copyRepository.existsByBookId(id);
+        if (hasCopies) {
+            throw new BusinessException("Cannot delete book with associated copies.", ErrorCode.DATA_INTEGRITY_VIOLATION);
+        }
+
         bookRepository.deleteById(id);
     }
 
     private void updateBookAuthors(Book book, Set<Long> authorIds) {
         if (authorIds == null) {
-            return; // No change requested
+            return;
         }
         if (authorIds.isEmpty()) {
             book.setAuthors(new HashSet<>()); // Clear authors
@@ -124,7 +138,7 @@ public class BookServiceImpl implements BookService {
 
     private void updateBookCategory(Book book, Long categoryId) {
         if (categoryId == null) {
-            return; // No change requested
+            return;
         }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId, ErrorCode.CATEGORY_NOT_FOUND));
@@ -132,11 +146,11 @@ public class BookServiceImpl implements BookService {
     }
 
     private void validateIsbnUniqueness(String isbn, Long currentBookId) {
-        bookRepository.findByIsbn(isbn).ifPresent(book -> {
-            if (currentBookId == null || !book.getId().equals(currentBookId)) {
-                throw new DuplicateResourceException("Book with ISBN " + isbn + " already exists", ErrorCode.BOOK_ALREADY_EXISTS);
-            }
-        });
+        bookRepository.findByIsbn(isbn)
+                .filter(book -> !book.getId().equals(currentBookId))
+                .ifPresent((book) -> {
+                    throw new DuplicateResourceException("Book with ISBN " + isbn + " already exists.", ErrorCode.BOOK_ALREADY_EXISTS);
+                });
     }
 
     private Book findBookByIdOrThrow(Long id) {
