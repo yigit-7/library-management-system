@@ -13,7 +13,7 @@ public record BookPatchRequest(
         @Size(min = 2, max = 255, message = "Title must be between 2 and 255 characters")
         String title,
 
-        @Size(max = 1000, message = "Description can be at most 1000 characters")
+        @Size(max = 5000, message = "Description can be at most 1000 characters")
         String description,
 
         @URL(message = "Invalid URL format for cover image")
