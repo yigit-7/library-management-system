@@ -6,13 +6,10 @@ import me.seyrek.library_management_system.common.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/authors")
+@RequestMapping("/api/authors")
 public class AuthorController {
 
     private final AuthorService authorService;
@@ -22,8 +19,10 @@ public class AuthorController {
     }
 
     @GetMapping
-    public ApiResponse<Page<AuthorDto>> getAllAuthors(@PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return ApiResponse.success(authorService.getAllAuthors(pageable));
+    public ApiResponse<Page<AuthorDto>> getAllAuthors(
+            @RequestParam(required = false) String name,
+            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        return ApiResponse.success(authorService.getAllAuthors(name, pageable));
     }
 
     @GetMapping("/{id}")
