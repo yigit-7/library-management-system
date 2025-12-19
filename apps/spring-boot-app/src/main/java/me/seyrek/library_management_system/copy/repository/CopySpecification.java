@@ -9,6 +9,12 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements JPA Specification API for dynamic query construction.
+ * Allows complex filtering (AND/OR criteria) directly on the database level
+ * without loading unnecessary data into memory.
+ */
+// TODO: refactor this (like LoanSpecification)
 public final class CopySpecification {
 
     public static Specification<Copy> withDynamicQuery(String barcode, String isbn, Long bookId, CopyStatus copyStatus) {

@@ -41,12 +41,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public Page<BookDto> getAllBooks(BookSearchRequest request, Pageable pageable) {
-        Specification<Book> spec = BookSpecification.withDynamicQuery(
-                request.isbn(),
-                request.title(),
-                request.authorName(),
-                request.categoryName()
-        );
+        Specification<Book> spec = BookSpecification.withDynamicQuery(request);
         return bookRepository.findAll(spec, pageable)
                 .map(bookMapper::toBookDto);
     }
@@ -114,7 +109,7 @@ public class BookServiceImpl implements BookService {
         }
 
         boolean hasCopies = copyRepository.existsByBookId(id);
-        if (hasCopies) {
+        if (hasCopies) { // TODO: add BookHasCopies bu da kalabilir
             throw new BusinessException("Cannot delete book with associated copies.", ErrorCode.DATA_INTEGRITY_VIOLATION);
         }
 
