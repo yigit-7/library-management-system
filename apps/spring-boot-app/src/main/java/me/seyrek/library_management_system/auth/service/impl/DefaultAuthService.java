@@ -41,7 +41,6 @@ public class DefaultAuthService implements AuthService {
  
         User user = userMapper.toUser(registerRequest);
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
-        user.setRoles(Set.of(Role.MEMBER));
  
         userService.saveUser(user);
     }

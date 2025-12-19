@@ -7,6 +7,7 @@ import me.seyrek.library_management_system.exception.client.ResourceNotFoundExce
 import me.seyrek.library_management_system.user.dto.*;
 import me.seyrek.library_management_system.user.mapper.UserMapper;
 import me.seyrek.library_management_system.user.model.User;
+import me.seyrek.library_management_system.user.model.UserStatus;
 import me.seyrek.library_management_system.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class JpaUserService implements UserService {
     @Override
     public UserDto findUserByEmail(String email) {
         var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email, ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userEmail: " + email, ErrorCode.USER_NOT_FOUND));
         return userMapper.toUserDto(user);
     }
 
@@ -95,9 +96,28 @@ public class JpaUserService implements UserService {
         return userMapper.toUserUpdateResponse(userRepository.save(user));
     }
 
+    // TODO: hop
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public void banUser(Long id, String reason) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id, ErrorCode.USER_NOT_FOUND));
+
+        user.setStatus(UserStatus.BANNED);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unbanUser(Long id, String reason) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id, ErrorCode.USER_NOT_FOUND));
+
+        user.setStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
     }
 
     private User findUserByIdOrThrow(Long id) {

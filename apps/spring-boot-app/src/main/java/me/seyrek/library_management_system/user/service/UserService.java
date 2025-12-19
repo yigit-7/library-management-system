@@ -28,4 +28,8 @@ public interface UserService {
     UserUpdateResponse updateUser(Long id, UserUpdateRequest request);
 
     void deleteUser(Long id);
+
+    void banUser(Long id, String reason);
+
+    void unbanUser(Long id, String reason);
 }

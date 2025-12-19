@@ -3,10 +3,7 @@ package me.seyrek.library_management_system.user.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.seyrek.library_management_system.common.ApiResponse;
-import me.seyrek.library_management_system.user.dto.UserUpdateRequest;
-import me.seyrek.library_management_system.user.dto.UserCreateRequest;
-import me.seyrek.library_management_system.user.dto.UserDto;
-import me.seyrek.library_management_system.user.dto.UserUpdateResponse;
+import me.seyrek.library_management_system.user.dto.*;
 import me.seyrek.library_management_system.user.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +19,10 @@ public class UserManagementController {
 
     private final UserService userService;
 
+    // TODO: add UserSearchRequest for filtering
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    ApiResponse<Page<UserDto>> getAllUsers(
+    public ApiResponse<Page<UserDto>> getAllUsers(
             @PageableDefault(size = 20, sort = "id")
             Pageable pageable
     ) {
@@ -54,6 +52,20 @@ public class UserManagementController {
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ApiResponse.success();
+    }
+
+    @PostMapping("/{id}/ban")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<Void> banUser(@PathVariable Long id, @Valid @RequestBody UserBanRequest request) {
+        userService.banUser(id, request.reason());
+        return ApiResponse.success();
+    }
+
+    @PostMapping("/{id}/unban")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<Void> unbanUser(@PathVariable Long id) {
+        userService.unbanUser(id, "User unbanned by admin.");
         return ApiResponse.success();
     }
 }
