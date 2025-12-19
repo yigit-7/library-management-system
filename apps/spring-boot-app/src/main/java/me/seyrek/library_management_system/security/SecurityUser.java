@@ -3,6 +3,7 @@ package me.seyrek.library_management_system.security;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.seyrek.library_management_system.user.model.User;
+import me.seyrek.library_management_system.user.model.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +41,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.getStatus() != UserStatus.BANNED;
     }
 
     @Override
@@ -50,6 +51,6 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getStatus() == UserStatus.ACTIVE;
     }
 }

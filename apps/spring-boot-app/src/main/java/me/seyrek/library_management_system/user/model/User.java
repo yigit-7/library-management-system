@@ -48,5 +48,16 @@ public class User extends BaseEntity {
     )
     @Column(name = "role")
     @NotEmpty
-    private Set<Role> roles = new HashSet<>();
+    @Builder.Default
+    private Set<Role> roles = new HashSet<>(Set.of(Role.MEMBER));
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private UserStatus status = UserStatus.ACTIVE;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    @Setter(AccessLevel.PROTECTED)
+    private Long version;
 }
