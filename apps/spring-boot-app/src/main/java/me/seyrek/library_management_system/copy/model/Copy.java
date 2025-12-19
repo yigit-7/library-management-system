@@ -3,6 +3,7 @@ package me.seyrek.library_management_system.copy.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import me.seyrek.library_management_system.book.model.Book;
@@ -28,4 +29,9 @@ public class Copy extends BaseEntity {
     @Column(nullable = false)
     @NotNull
     private CopyStatus status = CopyStatus.AVAILABLE;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    @Setter(AccessLevel.PROTECTED)
+    private Long version;
 }

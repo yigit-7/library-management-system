@@ -60,6 +60,13 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Copy getCopyEntityById(Long id) {
+        return copyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Copy not found with id: " + id, ErrorCode.COPY_NOT_FOUND));
+    }
+
+    @Override
     public CopyDto getCopyByBarcode(String barcode) {
         return copyRepository.findByBarcode(barcode)
                 .map(copyMapper::toCopyDto)
@@ -81,6 +88,7 @@ public class CopyServiceImpl implements CopyService {
         return copyMapper.toCopyDto(copyRepository.save(copy));
     }
 
+    // TODO: what happens if I update or patch a borrowed Copy?
     @Override
     public CopyDto updateCopy(Long id, CopyUpdateRequest request) {
         Copy existingCopy = copyRepository.findById(id)
@@ -93,7 +101,7 @@ public class CopyServiceImpl implements CopyService {
         });
 
         if (request.status() != existingCopy.getStatus()) {
-            validateAndChangeStatus(existingCopy, request.status());
+            existingCopy.setStatus(request.status());
         }
 
         if (!request.barcode().equals(existingCopy.getBarcode())) {
@@ -114,8 +122,8 @@ public class CopyServiceImpl implements CopyService {
             }
         });
 
-        if (request.status() != null && request.status() != existingCopy.getStatus()) {
-            validateAndChangeStatus(existingCopy, request.status());
+        if (request.status() != null && !request.status().equals(existingCopy.getStatus())) {
+            existingCopy.setStatus(request.status());
         }
 
         if (request.barcode() != null && !request.barcode().equals(existingCopy.getBarcode())) {
@@ -125,25 +133,51 @@ public class CopyServiceImpl implements CopyService {
         return copyMapper.toCopyDto(copyRepository.save(existingCopy));
     }
 
+    // buralarda sıkıntı çıkabilir :D
+
     @Override
     @Transactional
     public void retireCopy(Long id) {
-        Copy copy = copyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Copy not found", ErrorCode.COPY_NOT_FOUND));
-
-        validateAndChangeStatus(copy, CopyStatus.RETIRED);
+        Copy copy = getCopyEntityById(id);
+        copy.setStatus(CopyStatus.RETIRED);
         copyRepository.save(copy);
     }
 
-    private void validateAndChangeStatus(Copy copy, CopyStatus newStatus) {
-        CopyStatus current = copy.getStatus();
-
-        if (current == newStatus) return;
-
-        if (current == CopyStatus.LOANED || newStatus == CopyStatus.LOANED) {
-            throw new BusinessException("Operation forbidden involving LOANED status. Active loans must be returned first, and manual loan creation is not allowed.", ErrorCode.LOAN_STATUS_MODIFICATION_FORBIDDEN);
+    @Override
+    @Transactional
+    public void loanCopy(Long id) {
+        Copy copy = getCopyEntityById(id);
+        if (copy.getStatus() != CopyStatus.AVAILABLE) {
+            throw new BusinessException("Copy is not available for loan. Current status: " + copy.getStatus(), ErrorCode.COPY_NOT_AVAILABLE);
         }
+        copy.setStatus(CopyStatus.LOANED);
+        copyRepository.save(copy);
+    }
 
-        copy.setStatus(newStatus);
+    @Override
+    @Transactional
+    public void returnCopy(Long id) {
+        Copy copy = getCopyEntityById(id);
+        if (copy.getStatus() != CopyStatus.LOANED) {
+            throw new BusinessException("Cannot return a copy that is not on loan.", ErrorCode.COPY_NOT_ON_LOAN);
+        }
+        copy.setStatus(CopyStatus.AVAILABLE);
+        copyRepository.save(copy);
+    }
+
+    @Override
+    @Transactional
+    public void reportLost(Long id) {
+        Copy copy = getCopyEntityById(id);
+        copy.setStatus(CopyStatus.LOST);
+        copyRepository.save(copy);
+    }
+
+    @Override
+    @Transactional
+    public void reportDamaged(Long id) {
+        Copy copy = getCopyEntityById(id);
+        copy.setStatus(CopyStatus.MAINTENANCE);
+        copyRepository.save(copy);
     }
 }

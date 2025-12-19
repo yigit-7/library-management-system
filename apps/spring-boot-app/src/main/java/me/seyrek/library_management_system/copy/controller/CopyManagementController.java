@@ -15,30 +15,32 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/management/copies")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class CopyManagementController {
 
     private final CopyService copyService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ApiResponse<CopyDto> createCopy(@Valid @RequestBody CopyCreateRequest request) {
         return ApiResponse.success(copyService.createCopy(request));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ApiResponse<CopyDto> updateCopy(@PathVariable Long id, @Valid @RequestBody CopyUpdateRequest request) {
         return ApiResponse.success(copyService.updateCopy(id, request));
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public ApiResponse<CopyDto> patchCopy(@PathVariable Long id, @Valid @RequestBody CopyPatchRequest request) {
         return ApiResponse.success(copyService.patchCopy(id, request));
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ApiResponse<Void> deleteCopy(@PathVariable Long id) {
+    @PostMapping("/{id}/retire")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
+    public ApiResponse<Void> retireCopy(@PathVariable Long id) {
         copyService.retireCopy(id);
         return ApiResponse.success("Copy retired (soft deleted) successfully");
     }
