@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+// TODO: really need to add Specification?
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByName(String name);
