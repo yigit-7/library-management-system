@@ -9,8 +9,10 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import me.seyrek.library_management_system.common.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -27,6 +29,13 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Global Exception Handler
+ * * Strategy:
+ * Instead of exposing raw Java stack traces to the client (which is a security risk),
+ * we catch exceptions here and return a structured JSON response (ApiError)
+ * with a user-friendly message and the correct HTTP status code.
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -186,6 +195,24 @@ public class GlobalExceptionHandler {
         log.warn("Resource not found: {}", ex.getMessage());
         ErrorCode errorCode = ErrorCode.ENDPOINT_NOT_FOUND;
         ApiError apiError = new ApiError(errorCode, detail);
+        return buildErrorResponse(errorCode, apiError);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ApiResponse<Void>> handleOptimisticLock(ObjectOptimisticLockingFailureException ex) {
+        String detail = String.format("The resource has been modified by another user, please refresh and try again: '%s'", ex.getMessage());
+        log.warn("Optimistic lock failed: {}", ex.getMessage());
+        ErrorCode errorCode = ErrorCode.DATA_INTEGRITY_VIOLATION;
+        ApiError apiError = new ApiError(errorCode, detail);
+        return buildErrorResponse(errorCode, apiError);
+    }
+
+    @ExceptionHandler(PessimisticLockingFailureException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePessimisticLock(PessimisticLockingFailureException ex) {
+        log.warn("Pessimistic lock failed: {}", ex.getMessage());
+        // Burada genel bir hata kodu kullanılacak çünkü bilinmedik bir kilit hatası buraya düşecek
+        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        ApiError apiError = new ApiError(errorCode, "The operation could not be completed due to high system load. Please try again.");
         return buildErrorResponse(errorCode, apiError);
     }
 
