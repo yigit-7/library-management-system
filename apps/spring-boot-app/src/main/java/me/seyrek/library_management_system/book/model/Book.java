@@ -1,30 +1,30 @@
 package me.seyrek.library_management_system.book.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import me.seyrek.library_management_system.author.model.Author;
 import me.seyrek.library_management_system.category.model.Category;
+import me.seyrek.library_management_system.common.model.BaseEntity;
 import me.seyrek.library_management_system.copy.model.Copy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Book extends BaseEntity {
     @NaturalId(mutable = true)
     @Column(nullable = false, unique = true)
     @NotBlank(message = "ISBN cannot be blank")
@@ -40,6 +40,11 @@ public class Book {
 
     @URL(message = "Cover image URL should be valid")
     private String coverImageUrl;
+
+    @NotNull(message = "Price cannot be null")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @NotEmpty(message = "Authors cannot be empty")
     @ManyToMany
@@ -57,6 +62,11 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Copy> copies;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    @Setter(AccessLevel.PROTECTED)
+    private Long version;
 
     @PrePersist
     @PreUpdate

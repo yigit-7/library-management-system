@@ -1,5 +1,6 @@
 package me.seyrek.library_management_system.book.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public record BookCreateRequest(
@@ -24,6 +26,10 @@ public record BookCreateRequest(
 
         @URL(message = "Invalid URL format for cover image")
         String coverImageUrl,
+
+        @NotNull(message = "Price cannot be null")
+        @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+        BigDecimal price,
 
         @NotEmpty(message = "At least one author must be specified")
         Set<Long> authorIds,
