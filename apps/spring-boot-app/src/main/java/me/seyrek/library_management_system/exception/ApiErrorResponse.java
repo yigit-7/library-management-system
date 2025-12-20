@@ -5,20 +5,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ApiError(
+public record ApiErrorResponse(
         String code,
         String message,
         List<ValidationErrorDetail> details
 ) {
-    public ApiError(ErrorCode errorCode) {
+    public ApiErrorResponse(ErrorCode errorCode) {
         this(errorCode.getCode(), errorCode.getMessage(), null);
     }
 
-    public ApiError(ErrorCode errorCode, String customMessage) {
+    public ApiErrorResponse(ErrorCode errorCode, String customMessage) {
         this(errorCode.getCode(), customMessage, null);
     }
 
-    public ApiError(List<ValidationErrorDetail> details) {
+    public ApiErrorResponse(List<ValidationErrorDetail> details) {
         this(ErrorCode.VALIDATION_ERROR.getCode(), ErrorCode.VALIDATION_ERROR.getMessage(), details);
     }
 }
