@@ -56,12 +56,16 @@ public interface LoanMapper {
     @Mapping(target = "loanDate", ignore = true)
     @Mapping(target = "returnDate", ignore = true)
     @Mapping(target = "fines", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     Loan fromLoanCreateRequest(LoanCreateRequest request);
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "copy", ignore = true)
     @Mapping(target = "loanDate", ignore = true)
     @Mapping(target = "fines", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     void updateLoanFromRequest(LoanUpdateRequest request, @MappingTarget Loan loan);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
