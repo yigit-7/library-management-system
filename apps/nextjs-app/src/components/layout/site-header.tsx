@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { UserNav } from "@/components/user-nav"
+import { ModeToggle } from "@/components/layout/mode-toggle"
+import { UserNav } from "@/components/layout/user-nav"
 import { BookOpen } from "lucide-react"
-import { MainNav } from "@/components/main-nav"
-import { MobileNav } from "@/components/mobile-nav"
-import { getCurrentUser } from "@/lib/auth-utils"
+import { MainNav } from "@/components/layout/main-nav"
+import { MobileNav } from "@/components/layout/mobile-nav"
+import { getCurrentUser } from "@/lib/auth/auth-utils"
 
 export async function SiteHeader() {
   const user = await getCurrentUser()
@@ -18,7 +18,7 @@ export async function SiteHeader() {
 
         {/* Left: Logo (Hidden on mobile if needed, or adjusted) */}
         <div className="flex items-center mr-4 md:mr-8">
-          <Link className="flex items-center space-x-2 group" href="/">
+          <Link className="flex items-center space-x-2 group" href="/apps/nextjs-app/public">
             <BookOpen className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors" />
             <span className="hidden font-bold sm:inline-block text-lg tracking-tight">
               Library System

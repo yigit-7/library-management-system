@@ -3,9 +3,7 @@ import {
   useMutation,
   UseQueryOptions,
   UseMutationOptions,
-  QueryKey,
-  useInfiniteQuery,
-  UseInfiniteQueryOptions,
+  QueryKey
 } from '@tanstack/react-query';
 import { CancelablePromise } from '@/lib/api';
 import { ApiError } from '@/lib/api';

@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import { SiteHeader } from "@/components/site-header"
+import { SiteHeader } from "@/components/layout/site-header"
 
 export const metadata: Metadata = {
   title: "Terms of Service - Library System",

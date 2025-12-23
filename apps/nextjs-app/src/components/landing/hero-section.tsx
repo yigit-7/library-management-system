@@ -1,7 +1,7 @@
 import * as React from "react"
 import { UserDto } from "@/lib/api"
-import { HeroSearch } from "@/components/hero-search"
-import { WelcomeMessage } from "@/components/welcome-message"
+import { HeroSearch } from "@/components/landing/hero-search"
+import { WelcomeMessage } from "@/components/landing/welcome-message"
 
 interface HeroSectionProps {
   initialUser?: UserDto | null

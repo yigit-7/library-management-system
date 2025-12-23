@@ -42,7 +42,7 @@ export function MobileNav() {
         <SheetHeader className="px-1">
             <SheetTitle asChild>
                 <Link
-                href="/"
+                href="/apps/nextjs-app/public"
                 className="flex items-center"
                 onClick={() => setOpen(false)}
                 >

@@ -1,7 +1,7 @@
 import { ApiError } from "@/lib/api/core/ApiError"
 import { ApiErrorResponse } from "@/lib/api/models/ApiErrorResponse"
 import { ValidationErrorDetail } from "@/lib/api/models/ValidationErrorDetail"
-import { ErrorCodes } from "@/lib/error-codes"
+import { ErrorCodes } from "@/lib/constants/error-codes"
 
 // Interface to match the actual API response structure for Page objects (VIA_DTO mode)
 export interface PageResponse<T = unknown> {

@@ -6,8 +6,8 @@ import { UserControllerService, UserDto } from "@/lib/api"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
 import { logoutAction } from "@/app/actions/auth"
 import { useRouter } from "next/navigation"
-import { useApiQuery } from "@/lib/api-hooks"
-import { setupAxiosInterceptors } from "@/lib/axios-interceptor"
+import { useApiQuery } from "@/lib/api-client/api-hooks"
+import { setupAxiosInterceptors } from "@/lib/api-client/axios-interceptor"
 
 interface AuthProviderProps {
   children: React.ReactNode

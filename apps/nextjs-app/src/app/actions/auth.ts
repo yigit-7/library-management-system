@@ -1,11 +1,11 @@
 "use server"
 
-import "@/lib/api-config" // Import configuration to set API base URL
+import "@/lib/api-client/api-config" // Import configuration to set API base URL
 import { cookies } from "next/headers"
 import { AuthControllerService } from "@/lib/api"
 import { loginSchema, registerSchema, LoginInput, RegisterInput } from "@/lib/schemas/auth"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
-import { parseApiError } from "@/lib/api-utils"
+import { parseApiError } from "@/lib/api-client/api-utils"
 
 export type ActionResponse = {
   success: boolean

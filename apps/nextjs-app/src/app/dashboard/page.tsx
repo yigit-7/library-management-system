@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Book, Users, Library, AlertCircle } from "lucide-react"
 import { ROLES } from "@/lib/constants"
-import { useApiQuery } from "@/lib/api-hooks"
+import { useApiQuery } from "@/lib/api-client/api-hooks"
 import { 
   BookControllerService, 
   LoanManagementControllerService, 
@@ -12,7 +12,7 @@ import {
   LoanSearchRequest
 } from "@/lib/api"
 import { Skeleton } from "@/components/ui/skeleton"
-import { PageResponse } from "@/lib/api-utils"
+import { PageResponse } from "@/lib/api-client/api-utils"
 
 export default function DashboardPage() {
   const { user } = useAuth()

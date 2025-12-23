@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import { SiteHeader } from "@/components/site-header"
+import { SiteHeader } from "@/components/layout/site-header"
 import { Separator } from "@/components/ui/separator"
 
 export const metadata: Metadata = {

@@ -1,10 +1,10 @@
-import "@/lib/api-config"
+import "@/lib/api-client/api-config"
 import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BookControllerService } from "@/lib/api"
-import { SiteHeader } from "@/components/site-header"
+import { SiteHeader } from "@/components/layout/site-header"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -21,9 +21,9 @@ import {
   MapPin,
   Library
 } from "lucide-react"
-import { BookDescription } from "@/components/book-description"
-import { BookReviews } from "@/components/book-reviews"
-import { BookFloatingBar } from "@/components/book-floating-bar"
+import { BookDescription } from "@/components/books/book-description"
+import { BookReviews } from "@/components/books/book-reviews"
+import { BookFloatingBar } from "@/components/books/book-floating-bar"
 import React from "react"
 
 interface BookPageProps {

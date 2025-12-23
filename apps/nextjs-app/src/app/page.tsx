@@ -1,7 +1,7 @@
-import { FeaturesSection } from "@/components/features-section"
-import { SiteHeader } from "@/components/site-header"
-import { HeroSection } from "@/components/hero-section"
-import { getCurrentUser } from "@/lib/auth-utils"
+import { FeaturesSection } from "@/components/landing/features-section"
+import { SiteHeader } from "@/components/layout/site-header"
+import { HeroSection } from "@/components/landing/hero-section"
+import { getCurrentUser } from "@/lib/auth/auth-utils"
 
 export default async function Home() {
   const user = await getCurrentUser()
