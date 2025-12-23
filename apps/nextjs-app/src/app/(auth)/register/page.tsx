@@ -1,0 +1,21 @@
+import { Metadata } from "next"
+import { RegisterForm } from "@/components/auth/register-form"
+import { AuthLayout } from "@/components/auth/auth-layout"
+
+export const metadata: Metadata = {
+  title: "Register - Library System",
+  description: "Create an account",
+}
+
+export default function RegisterPage() {
+  return (
+    <AuthLayout
+      title="Create an account"
+      description="Enter your email below to create your account"
+      quote="The only thing that you absolutely have to know, is the location of the library."
+      author="Albert Einstein"
+    >
+      <RegisterForm />
+    </AuthLayout>
+  )
+}
