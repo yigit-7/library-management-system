@@ -1,3 +1,4 @@
+import "@/lib/api-config"
 import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,9 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { 
   ArrowLeft, 
-  BookOpen, 
-  User, 
-  Tag, 
+  BookOpen,
   Calendar, 
   FileText, 
   Building2, 
@@ -22,15 +21,10 @@ import {
   MapPin,
   Library
 } from "lucide-react"
-import { OpenAPI } from "@/lib/api/core/OpenAPI"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BookDescription } from "@/components/book-description"
 import { BookReviews } from "@/components/book-reviews"
 import { BookFloatingBar } from "@/components/book-floating-bar"
-
-// Ensure API base URL is set for server-side fetching
-OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+import React from "react"
 
 interface BookPageProps {
   params: Promise<{
@@ -141,6 +135,7 @@ export default async function BookPage({ params }: BookPageProps) {
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-500"
                   priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 300px, 350px"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-muted">
@@ -148,7 +143,7 @@ export default async function BookPage({ params }: BookPageProps) {
                 </div>
               )}
             </div>
-
+            
             {/* Location Card (Replaces Borrow Button) */}
             <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
                 <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center gap-3">
@@ -214,7 +209,14 @@ export default async function BookPage({ params }: BookPageProps) {
                 <span>by</span>
                 <span className="font-semibold text-foreground">
                     {book.authors && book.authors.length > 0 
-                        ? book.authors.map(a => a.name).join(", ") 
+                        ? book.authors.map((author, index) => (
+                            <React.Fragment key={author.id || index}>
+                              <Link href={`/authors/${author.id}`} className="hover:underline hover:text-primary transition-colors">
+                                {author.name}
+                              </Link>
+                              {index < (book.authors?.length || 0) - 1 && ", "}
+                            </React.Fragment>
+                          ))
                         : "Unknown Author"}
                 </span>
               </div>
@@ -279,9 +281,9 @@ export default async function BookPage({ params }: BookPageProps) {
       </main>
       
       {/* Floating Bar */}
-      <BookFloatingBar
-        title={book.title || "Book"}
-        coverUrl={book.coverImageUrl}
+      <BookFloatingBar 
+        title={book.title || "Book"} 
+        coverUrl={book.coverImageUrl} 
         location={book.location}
       />
 
