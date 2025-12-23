@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +61,8 @@ public class DefaultAuthService implements AuthService {
         List<String> roles = user.getRoles().stream().map(Role::name).collect(Collectors.toList());
         claims.put("roles", roles);
         claims.put("email", user.getEmail());
+        claims.put("firstName", user.getFirstName());
+        claims.put("lastName", user.getLastName());
  
         String jwtToken = jwtService.generateToken(claims, user.getId().toString());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
@@ -77,6 +78,10 @@ public class DefaultAuthService implements AuthService {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", user.getRoles().stream().map(Role::name).collect(Collectors.toList()));
+        claims.put("email", user.getEmail());
+        claims.put("firstName", user.getFirstName());
+        claims.put("lastName", user.getLastName());
+
         String newAccessToken = jwtService.generateToken(claims, user.getId().toString());
 
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user.getId());
