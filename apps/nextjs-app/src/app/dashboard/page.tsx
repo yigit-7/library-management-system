@@ -12,7 +12,6 @@ import {
   LoanSearchRequest
 } from "@/lib/api"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useEffect } from "react"
 import { PageResponse } from "@/lib/api-utils"
 
 export default function DashboardPage() {
@@ -47,16 +46,6 @@ export default function DashboardPage() {
     [{ page: 0, size: 1 }],
     { enabled: isAdmin }
   )
-
-  useEffect(() => {
-    console.log("Dashboard Data Debug:", {
-        books: booksData,
-        activeLoans: activeLoansData,
-        overdueLoans: overdueLoansData,
-        users: usersData,
-        isAdmin
-    })
-  }, [booksData, activeLoansData, overdueLoansData, usersData, isAdmin])
 
   const renderStat = (loading: boolean, data: unknown, suffix?: string) => {
     if (loading) {
