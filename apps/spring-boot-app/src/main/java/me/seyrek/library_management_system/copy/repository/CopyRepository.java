@@ -1,6 +1,7 @@
 package me.seyrek.library_management_system.copy.repository;
 
 import me.seyrek.library_management_system.copy.model.Copy;
+import me.seyrek.library_management_system.copy.model.CopyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface CopyRepository extends JpaRepository<Copy, Long>, JpaSpecificat
     boolean existsByBarcode(String barcode);
     boolean existsByBookId(Long bookId);
     Page<Copy> findByBookId(Long bookId, Pageable pageable);
+    long countByStatus(CopyStatus status);
 }
