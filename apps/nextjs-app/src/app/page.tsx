@@ -1,36 +1,10 @@
 import { FeaturesSection } from "@/components/features-section"
 import { SiteHeader } from "@/components/site-header"
 import { HeroSection } from "@/components/hero-section"
-import { cookies } from "next/headers"
-import { decodeJwt, JWTPayload } from "jose"
-import { UserDto } from "@/lib/api"
-
-interface CustomJwtPayload extends JWTPayload {
-  email?: string
-  firstName?: string
-  lastName?: string
-  roles?: string[]
-}
+import { getCurrentUser } from "@/lib/auth-utils"
 
 export default async function Home() {
-  const cookieStore = await cookies()
-  const accessToken = cookieStore.get("accessToken")?.value
-  
-  let user: UserDto | null = null
-
-  if (accessToken) {
-    try {
-      const payload = decodeJwt(accessToken) as CustomJwtPayload
-      user = {
-        email: payload.email || payload.sub,
-        firstName: payload.firstName || "User",
-        lastName: payload.lastName || "",
-        roles: (payload.roles as Array<'MEMBER' | 'LIBRARIAN' | 'ADMIN'>) || []
-      }
-    } catch (e) {
-      console.error("Failed to decode token on Home page", e)
-    }
-  }
+  const user = await getCurrentUser()
 
   return (
     <div className="flex min-h-screen flex-col">

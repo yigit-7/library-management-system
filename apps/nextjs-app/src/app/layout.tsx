@@ -7,12 +7,24 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
 import { QueryProvider } from "@/components/query-provider"
 import { Toaster } from "@/components/ui/toaster"
+import React from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin", "latin-ext"] });
 
 export const metadata: Metadata = {
-  title: "Library Management System",
-  description: "A comprehensive library management system",
+  title: {
+    default: "Library Management System",
+    template: "%s | Library Management System",
+  },
+  description: "A comprehensive library management system for borrowing books, managing loans, and more.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://library.example.com",
+    siteName: "Library Management System",
+    title: "Library Management System",
+    description: "A comprehensive library management system for borrowing books, managing loans, and more.",
+  },
 };
 
 export default async function RootLayout({
