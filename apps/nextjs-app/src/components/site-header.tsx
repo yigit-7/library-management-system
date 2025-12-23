@@ -5,41 +5,10 @@ import { UserNav } from "@/components/user-nav"
 import { BookOpen } from "lucide-react"
 import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
-import { cookies } from "next/headers"
-import { decodeJwt, JWTPayload } from "jose"
-import { UserDto } from "@/lib/api"
-
-// Define the expected JWT payload structure
-interface CustomJwtPayload extends JWTPayload {
-  email?: string
-  firstName?: string
-  lastName?: string
-  roles?: string[]
-}
+import { getCurrentUser } from "@/lib/auth-utils"
 
 export async function SiteHeader() {
-  const cookieStore = await cookies()
-  const accessToken = cookieStore.get("accessToken")?.value
-  
-  let user: UserDto | null = null
-
-  if (accessToken) {
-    try {
-      // Decode token to get user info for initial render
-      // We don't verify signature here for performance, middleware/backend handles security
-      const payload = decodeJwt(accessToken) as CustomJwtPayload
-      
-      // Map JWT payload to UserDto
-      user = {
-        email: payload.email || payload.sub,
-        firstName: payload.firstName || "User",
-        lastName: payload.lastName || "",
-        roles: (payload.roles as Array<'MEMBER' | 'LIBRARIAN' | 'ADMIN'>) || []
-      }
-    } catch (e) {
-      console.error("Failed to decode token in SiteHeader", e)
-    }
-  }
+  const user = await getCurrentUser()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

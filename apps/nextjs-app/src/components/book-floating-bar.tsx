@@ -17,11 +17,18 @@ export function BookFloatingBar({ title, coverUrl, location }: BookFloatingBarPr
   const [isClosed, setIsClosed] = React.useState(false)
 
   React.useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      // Show bar after scrolling down 500px
-      const show = window.scrollY > 800
-      if (show !== isVisible) {
-        setIsVisible(show)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const show = window.scrollY > 500
+          if (show !== isVisible) {
+            setIsVisible(show)
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     }
 
@@ -54,6 +61,7 @@ export function BookFloatingBar({ title, coverUrl, location }: BookFloatingBarPr
                     alt={title} 
                     fill 
                     className="object-cover"
+                    sizes="48px"
                 />
             ) : (
                 <div className="h-full w-full bg-muted flex items-center justify-center text-xs">
