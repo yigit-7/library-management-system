@@ -17,7 +17,6 @@ public interface FineMapper {
     @Mapping(target = "status", constant = "UNPAID")
     @Mapping(target = "fineDate", ignore = true)
     @Mapping(target = "paymentDate", ignore = true)
-    @Mapping(target = "version", ignore = true)
     Fine fromFineCreateRequest(FineCreateRequest request);
 
     @Mapping(target = "user", ignore = true)
@@ -25,7 +24,6 @@ public interface FineMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "fineDate", ignore = true)
     @Mapping(target = "paymentDate", ignore = true)
-    @Mapping(target = "version", ignore = true)
     void updateFineFromRequest(FineUpdateRequest request, @MappingTarget Fine fine);
 
 
@@ -34,7 +32,6 @@ public interface FineMapper {
     @Mapping(target = "loan", ignore = true)
     @Mapping(target = "fineDate", ignore = true)
     @Mapping(target = "paymentDate", ignore = true)
-    @Mapping(target = "version", ignore = true)
     void patchFineFromRequest(FinePatchRequest request, @MappingTarget Fine fine);
 
     @Mapping(target = "userId", source = "userId")
