@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import me.seyrek.library_management_system.exception.ApiError;
+import me.seyrek.library_management_system.exception.ApiErrorResponse;
 
 import java.time.Instant;
 
@@ -20,7 +20,7 @@ public class ApiResponse<T> {
     private Instant timestamp;
     private String message;
     private T data;
-    private ApiError error;
+    private ApiErrorResponse error;
 
     // Başarılı: data var
     public static <T> ApiResponse<T> success(T data) {
@@ -49,7 +49,7 @@ public class ApiResponse<T> {
     }
 
     // Başarısız: (GlobalExceptionHandler paşa hazretleri kullanacak)
-    public static <T> ApiResponse<T> failure(ApiError error) {
+    public static <T> ApiResponse<T> failure(ApiErrorResponse error) {
         return ApiResponse.<T>builder()
                 .success(false)
                 .timestamp(Instant.now())
