@@ -1,7 +1,6 @@
 package me.seyrek.library_management_system.loan.service;
 
 import me.seyrek.library_management_system.copy.model.Copy;
-import me.seyrek.library_management_system.copy.model.CopyStatus;
 import me.seyrek.library_management_system.copy.service.CopyService;
 import me.seyrek.library_management_system.exception.ErrorCode;
 import me.seyrek.library_management_system.exception.client.BusinessException;
@@ -13,8 +12,8 @@ import me.seyrek.library_management_system.loan.model.Loan;
 import me.seyrek.library_management_system.loan.model.LoanStatus;
 import me.seyrek.library_management_system.loan.repository.LoanRepository;
 import me.seyrek.library_management_system.loan.repository.LoanSpecification;
+import me.seyrek.library_management_system.loan.service.rule.LoanCreationRule;
 import me.seyrek.library_management_system.user.model.User;
-import me.seyrek.library_management_system.user.model.UserStatus;
 import me.seyrek.library_management_system.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -26,13 +25,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class LoanServiceImpl implements LoanService {
 
-    private final int maxActiveLoans;
     private final int dueDays;
 
     private final LoanRepository loanRepository;
@@ -40,22 +39,23 @@ public class LoanServiceImpl implements LoanService {
     private final CopyService copyService;
     private final FineService fineService;
     private final LoanMapper loanMapper;
+    private final List<LoanCreationRule> loanCreationRules;
 
     public LoanServiceImpl(
-            @Value("${application.library.loan.max-active}") int maxActiveLoans,
             @Value("${application.library.loan.due-days}") int dueDays,
             LoanRepository loanRepository,
             UserRepository userRepository,
             CopyService copyService,
             FineService fineService,
-            LoanMapper loanMapper) {
-        this.maxActiveLoans = maxActiveLoans;
+            LoanMapper loanMapper,
+            List<LoanCreationRule> loanCreationRules) {
         this.dueDays = dueDays;
         this.loanRepository = loanRepository;
         this.userRepository = userRepository;
         this.copyService = copyService;
         this.fineService = fineService;
         this.loanMapper = loanMapper;
+        this.loanCreationRules = loanCreationRules;
     }
 
     @Override
@@ -90,24 +90,10 @@ public class LoanServiceImpl implements LoanService {
 
         Copy copy = copyService.getCopyEntityById(request.copyId());
 
-        if (user.getStatus() != UserStatus.ACTIVE) {
-            throw new BusinessException("User account is not active. Status: " + user.getStatus(), ErrorCode.USER_ACCOUNT_LOCKED);
-        }
-
-        if (!copy.getStatus().equals(CopyStatus.AVAILABLE)) {
-            throw new BusinessException("Copy is not available for loan. Current status of copy: " + copy.getStatus(), ErrorCode.COPY_NOT_AVAILABLE);
-        }
-
-        if (fineService.isFineLimitExceeded(request.userId())) {
-            throw new BusinessException("User has exceeded the unpaid fine limit.", ErrorCode.USER_FINE_LIMIT_EXCEEDED);
-        }
-
-        if (loanRepository.countByUserIdAndStatus(request.userId(), LoanStatus.ACTIVE) >= maxActiveLoans) {
-            throw new BusinessException("User has reached the maximum number of active loans (limit: " + maxActiveLoans + ").", ErrorCode.USER_LOAN_LIMIT_EXCEEDED);
-        }
-
-        if (loanRepository.existsByCopy_Book_IdAndStatus(copy.getBook().getId(), LoanStatus.ACTIVE)) {
-            throw new BusinessException("User already has an active loan on this book.", ErrorCode.LOAN_ALREADY_EXISTS);
+        // Execute all validation rules
+        // Perfect polimorphism example here („ᵕᴗᵕ„)
+        for (LoanCreationRule rule : loanCreationRules) {
+            rule.validate(user, copy);
         }
 
         copyService.loanCopy(copy.getId());
