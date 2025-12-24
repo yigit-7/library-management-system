@@ -51,10 +51,4 @@ public class FineManagementController {
     public ApiResponse<FineDto> patchFine(@PathVariable Long id, @Valid @RequestBody FinePatchRequest request) {
         return ApiResponse.success(fineService.patchFine(id, request));
     }
-
-    @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteFine(@PathVariable Long id) {
-        fineService.deleteFine(id);
-        return ApiResponse.success("Fine with ID " + id + " has been successfully deleted");
-    }
 }

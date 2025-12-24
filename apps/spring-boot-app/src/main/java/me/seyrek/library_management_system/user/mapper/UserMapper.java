@@ -21,21 +21,31 @@ public interface UserMapper {
     UserUpdateResponse toUserUpdateResponse(User user);
 
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     User toUser(UserDto userDto);
 
     @Mapping(target = "roles", ignore = true) // Handled in the service layer
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     User toUser(RegisterRequest registerRequest);
 
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     User toUser(UserCreateRequest request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     void updateUserFromEditProfileRequest(UserEditProfileRequest request, @MappingTarget User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "version", ignore = true)
     void updateUserFromRequest(UserUpdateRequest request, @MappingTarget User user);
 }

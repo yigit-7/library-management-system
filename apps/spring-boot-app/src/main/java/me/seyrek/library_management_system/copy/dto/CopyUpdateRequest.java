@@ -11,6 +11,8 @@ public record CopyUpdateRequest(
 
         @NotNull(message = "Status cannot be null")
         @NotLoaned(message = "Copy status cannot be LOANED manually.")
-        CopyStatus status
+        CopyStatus status,
+
+        String location
 ) {
 }

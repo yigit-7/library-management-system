@@ -7,6 +7,7 @@ public record CopyDto(
         Long id,
         BookShortDto book,
         String barcode,
-        CopyStatus status
+        CopyStatus status,
+        String location
 ) {
 }

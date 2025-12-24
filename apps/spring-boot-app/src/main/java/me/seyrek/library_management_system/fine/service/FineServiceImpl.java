@@ -10,8 +10,12 @@ import me.seyrek.library_management_system.fine.model.Fine;
 import me.seyrek.library_management_system.fine.model.FineStatus;
 import me.seyrek.library_management_system.fine.repository.FineRepository;
 import me.seyrek.library_management_system.fine.repository.FineSpecification;
+import me.seyrek.library_management_system.fine.service.strategy.OverdueFineCalculationStrategy;
 import me.seyrek.library_management_system.loan.model.Loan;
 import me.seyrek.library_management_system.loan.repository.LoanRepository;
+import me.seyrek.library_management_system.notification.model.NotificationCategory;
+import me.seyrek.library_management_system.notification.model.NotificationRequest;
+import me.seyrek.library_management_system.notification.service.NotificationService;
 import me.seyrek.library_management_system.payment.dto.PaymentRequest;
 import me.seyrek.library_management_system.payment.service.PaymentService;
 import me.seyrek.library_management_system.user.model.User;
@@ -27,7 +31,6 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Slf4j
 @Service
@@ -35,29 +38,32 @@ import java.time.temporal.ChronoUnit;
 public class FineServiceImpl implements FineService {
 
     private final BigDecimal maxUnpaidAmount;
-    private final BigDecimal amountPerDay;
 
     private final FineRepository fineRepository;
     private final UserRepository userRepository;
     private final LoanRepository loanRepository;
     private final FineMapper fineMapper;
     private final PaymentService paymentService;
+    private final OverdueFineCalculationStrategy overdueFineCalculationStrategy;
+    private final NotificationService notificationService;
 
     public FineServiceImpl(
             @Value("${application.library.fine.max-unpaid-amount}") BigDecimal maxUnpaidAmount,
-            @Value("${application.library.fine.amount-per-day}") BigDecimal amountPerDay,
             FineRepository fineRepository,
             UserRepository userRepository,
             LoanRepository loanRepository,
             FineMapper fineMapper,
-            PaymentService paymentService) {
+            PaymentService paymentService,
+            OverdueFineCalculationStrategy overdueFineCalculationStrategy,
+            NotificationService notificationService) {
         this.maxUnpaidAmount = maxUnpaidAmount;
-        this.amountPerDay = amountPerDay;
         this.fineRepository = fineRepository;
         this.userRepository = userRepository;
         this.loanRepository = loanRepository;
         this.fineMapper = fineMapper;
         this.paymentService = paymentService;
+        this.overdueFineCalculationStrategy = overdueFineCalculationStrategy;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -101,32 +107,34 @@ public class FineServiceImpl implements FineService {
         fine.setLoan(loan);
         fine.setFineDate(Instant.now());
 
-        return fineMapper.toFineDto(fineRepository.save(fine));
+        Fine savedFine = fineRepository.save(fine);
+        sendFineIssuedNotification(savedFine);
+        return fineMapper.toFineDto(savedFine);
     }
 
     @Override
     public void createOverdueFine(Loan loan) {
-        if (loan == null || loan.getReturnDate() == null || !loan.getReturnDate().isAfter(loan.getDueDate())) {
+        if (loan == null || loan.getReturnDate() == null) {
+            log.warn("Cannot create overdue fine for loan {}: Loan is null or not returned yet.", loan != null ? loan.getId() : "null");
             return;
         }
 
-        long overdueDays = ChronoUnit.DAYS.between(loan.getDueDate(), loan.getReturnDate());
-        
-        if (overdueDays == 0) {
-            overdueDays = 1;
+        if (!loan.getReturnDate().isAfter(loan.getDueDate())) {
+            return;
         }
 
-        BigDecimal fineAmount = amountPerDay.multiply(BigDecimal.valueOf(overdueDays));
+        BigDecimal fineAmount = overdueFineCalculationStrategy.calculateFine(loan);
 
         Fine fine = new Fine();
         fine.setUser(loan.getUser());
         fine.setLoan(loan);
         fine.setAmount(fineAmount);
-        fine.setReason("Overdue book return for " + overdueDays + " days.");
+        fine.setReason(String.format("Overdue fine for loan ID: %d. Due date: %s. Return date: %s.", loan.getId(), loan.getDueDate(), loan.getReturnDate()));
         fine.setStatus(FineStatus.UNPAID);
         fine.setFineDate(loan.getReturnDate());
 
-        fineRepository.save(fine);
+        Fine savedFine = fineRepository.save(fine);
+        sendFineIssuedNotification(savedFine);
     }
 
     @Override
@@ -148,7 +156,8 @@ public class FineServiceImpl implements FineService {
         fine.setStatus(FineStatus.UNPAID);
         fine.setFineDate(Instant.now());
 
-        fineRepository.save(fine);
+        Fine savedFine = fineRepository.save(fine);
+        sendFineIssuedNotification(savedFine);
     }
 
     @Override
@@ -165,7 +174,8 @@ public class FineServiceImpl implements FineService {
         fine.setStatus(FineStatus.UNPAID);
         fine.setFineDate(loan.getReturnDate() != null ? loan.getReturnDate() : Instant.now());
 
-        fineRepository.save(fine);
+        Fine savedFine = fineRepository.save(fine);
+        sendFineIssuedNotification(savedFine);
     }
 
     @Override
@@ -183,6 +193,7 @@ public class FineServiceImpl implements FineService {
         // Handle logic if status changes to PAID
         if (request.status() == FineStatus.PAID && existingFine.getPaymentDate() == null) {
             existingFine.setPaymentDate(Instant.now());
+            sendFinePaidNotification(existingFine);
         } else if (request.status() == FineStatus.UNPAID) {
             existingFine.setPaymentDate(null);
         }
@@ -217,17 +228,9 @@ public class FineServiceImpl implements FineService {
         fine.setStatus(FineStatus.PAID);
         fine.setPaymentDate(Instant.now());
         
-        return fineMapper.toFineDto(fineRepository.save(fine));
-    }
-
-    @Override
-    public void deleteFine(Long id) {
-        if (!fineRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Fine not found with id: " + id, ErrorCode.RESOURCE_NOT_FOUND);
-        }
-        // Optional: Check if fine is PAID before deleting?
-        // For now, standard delete.
-        fineRepository.deleteById(id);
+        Fine savedFine = fineRepository.save(fine);
+        sendFinePaidNotification(savedFine);
+        return fineMapper.toFineDto(savedFine);
     }
 
     @Override
@@ -240,5 +243,42 @@ public class FineServiceImpl implements FineService {
     private Fine findFineByIdOrThrow(Long id) {
         return fineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Fine not found with id: " + id, ErrorCode.RESOURCE_NOT_FOUND));
+    }
+
+    private void sendFineIssuedNotification(Fine fine) {
+        String subject = "New Fine Issued";
+        String message = fine.getReason();
+
+        NotificationRequest request = NotificationRequest.builder()
+                .userId(fine.getUser().getId())
+                .recipient(fine.getUser().getEmail())
+                .subject(subject)
+                .message(message)
+                .category(NotificationCategory.FINE_ISSUED)
+                .variable("name", fine.getUser().getName())
+                .variable("amount", fine.getAmount())
+                .variable("date", fine.getFineDate())
+                .variable("message", message)
+                .build();
+
+        notificationService.send(request);
+    }
+
+    private void sendFinePaidNotification(Fine fine) {
+        String subject = "Fine Payment Confirmation";
+        String message = "Payment received for Fine ID: " + fine.getId();
+
+        NotificationRequest request = NotificationRequest.builder()
+                .userId(fine.getUser().getId())
+                .recipient(fine.getUser().getEmail())
+                .subject(subject)
+                .message(message)
+                .category(NotificationCategory.FINE_PAID)
+                .variable("name", fine.getUser().getName())
+                .variable("amount", fine.getAmount())
+                .variable("message", message)
+                .build();
+
+        notificationService.send(request);
     }
 }

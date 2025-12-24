@@ -19,6 +19,5 @@ public interface FineService {
     FineDto updateFine(Long id, FineUpdateRequest request);
     FineDto patchFine(Long id, FinePatchRequest request);
     FineDto payFine(Long id, PaymentRequest request);
-    void deleteFine(Long id);
     boolean isFineLimitExceeded(Long userId);
 }

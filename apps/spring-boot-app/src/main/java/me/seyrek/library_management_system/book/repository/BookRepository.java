@@ -1,6 +1,7 @@
 package me.seyrek.library_management_system.book.repository;
 
 import me.seyrek.library_management_system.book.model.Book;
+import me.seyrek.library_management_system.copy.model.CopyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

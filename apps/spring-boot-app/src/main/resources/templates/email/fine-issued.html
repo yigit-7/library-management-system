@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${subject}">Fine Issued</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; }
+        .container { max-width: 600px; margin: 20px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background-color: #5bc0de; color: white; padding: 20px; text-align: center; }
+        .content { padding: 30px; }
+        .fine-details { background-color: #eef7fb; border: 1px solid #bce8f1; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .amount { font-size: 1.5em; color: #d9534f; font-weight: bold; }
+        .footer { background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 0.8em; color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>New Fine Issued</h1>
+    </div>
+    <div class="content">
+        <p>Dear <strong th:text="${name}">User</strong>,</p>
+
+        <p>A new fine has been applied to your account. Below are the details:</p>
+
+        <div class="fine-details">
+            <p><strong>Amount:</strong> <span class="amount" th:text="${amount}">0.00</span></p>
+            <p><strong>Date:</strong> <span th:text="${#temporals.format(date, 'dd-MM-yyyy HH:mm')}">2023-01-01</span></p>
+            <p><strong>Reason:</strong> <span th:text="${message}">Reason text</span></p>
+        </div>
+
+        <p>Please log in to your account to pay this fine.</p>
+    </div>
+    <div class="footer">
+        <p>Library Management System</p>
+    </div>
+</div>
+</body>
+</html>

@@ -35,5 +35,14 @@ public interface FineMapper {
     void patchFineFromRequest(FinePatchRequest request, @MappingTarget Fine fine);
 
     @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "userEmail", ignore = true)
+    @Mapping(target = "loanId", ignore = true)
+    @Mapping(target = "bookId", ignore = true)
+    @Mapping(target = "minAmount", ignore = true)
+    @Mapping(target = "maxAmount", ignore = true)
+    @Mapping(target = "fineDateStart", ignore = true)
+    @Mapping(target = "fineDateEnd", ignore = true)
+    @Mapping(target = "paymentDateStart", ignore = true)
+    @Mapping(target = "paymentDateEnd", ignore = true)
     FineSearchRequest toFineSearchRequest(FineUserSearchRequest userRequest, Long userId);
 }
