@@ -15,6 +15,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -55,4 +56,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
      */
     @Query("SELECT COUNT(l) FROM Loan l WHERE l.returnDate IS NULL AND l.dueDate >= CURRENT_TIMESTAMP AND l.dueDate <= :threeDaysLater")
     long countDueSoonLoans(@Param("threeDaysLater") Instant threeDaysLater);
-    }
+
+    List<Loan> findAllByStatusAndDueDateBefore(LoanStatus status, Instant date);
+
+    List<Loan> findAllByStatusAndDueDateBetween(LoanStatus status, Instant start, Instant end);
+}
