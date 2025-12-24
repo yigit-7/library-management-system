@@ -94,19 +94,15 @@ public class CopyServiceImpl implements CopyService {
         Copy existingCopy = copyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Copy not found with id: " + id, ErrorCode.COPY_NOT_FOUND));
 
-        copyRepository.findByBarcode(request.barcode()).ifPresent(copy -> {
-            if (!copy.getId().equals(id)) {
-                throw new DuplicateResourceException("Copy with barcode " + request.barcode() + " already exists.", ErrorCode.COPY_ALREADY_EXISTS);
-            }
-        });
-
-        if (request.status() != existingCopy.getStatus()) {
-            existingCopy.setStatus(request.status());
-        }
-
         if (!request.barcode().equals(existingCopy.getBarcode())) {
-            existingCopy.setBarcode(request.barcode());
+            copyRepository.findByBarcode(request.barcode()).ifPresent(copy -> {
+                if (!copy.getId().equals(id)) {
+                    throw new DuplicateResourceException("Copy with barcode " + request.barcode() + " already exists.", ErrorCode.COPY_ALREADY_EXISTS);
+                }
+            });
         }
+
+        copyMapper.updateCopyFromRequest(request, existingCopy);
 
         return copyMapper.toCopyDto(copyRepository.save(existingCopy));
     }
@@ -116,19 +112,15 @@ public class CopyServiceImpl implements CopyService {
         Copy existingCopy = copyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Copy not found with id: " + id, ErrorCode.COPY_NOT_FOUND));
 
-        copyRepository.findByBarcode(request.barcode()).ifPresent(copy -> {
-            if (!copy.getId().equals(id)) {
-                throw new DuplicateResourceException("Copy with barcode " + request.barcode() + " already exists.", ErrorCode.COPY_ALREADY_EXISTS);
-            }
-        });
-
-        if (request.status() != null && !request.status().equals(existingCopy.getStatus())) {
-            existingCopy.setStatus(request.status());
-        }
-
         if (request.barcode() != null && !request.barcode().equals(existingCopy.getBarcode())) {
-            existingCopy.setBarcode(request.barcode());
+            copyRepository.findByBarcode(request.barcode()).ifPresent(copy -> {
+                if (!copy.getId().equals(id)) {
+                    throw new DuplicateResourceException("Copy with barcode " + request.barcode() + " already exists.", ErrorCode.COPY_ALREADY_EXISTS);
+                }
+            });
         }
+
+        copyMapper.patchCopyFromRequest(request, existingCopy);
 
         return copyMapper.toCopyDto(copyRepository.save(existingCopy));
     }
