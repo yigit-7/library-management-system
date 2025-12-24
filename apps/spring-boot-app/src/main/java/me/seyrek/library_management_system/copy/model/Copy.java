@@ -30,6 +30,8 @@ public class Copy extends BaseEntity {
     @NotNull
     private CopyStatus status = CopyStatus.AVAILABLE;
 
+    private String location;
+
     @Version
     @Column(name = "version", nullable = false)
     @Setter(AccessLevel.PROTECTED)
