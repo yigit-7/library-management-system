@@ -60,4 +60,8 @@ public class User extends BaseEntity {
     @Column(name = "version", nullable = false)
     @Setter(AccessLevel.PROTECTED)
     private Long version;
+
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 }
