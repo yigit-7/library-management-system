@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import me.seyrek.library_management_system.common.model.BaseEntity;
+import me.seyrek.library_management_system.notification.model.UserNotificationPreference;
 import org.hibernate.annotations.NaturalId;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,6 +56,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserNotificationPreference> notificationPreferences = new HashSet<>();
 
     @Version
     @Column(name = "version", nullable = false)
