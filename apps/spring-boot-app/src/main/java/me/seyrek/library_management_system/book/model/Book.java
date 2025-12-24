@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -46,6 +47,17 @@ public class Book extends BaseEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
+    private String publisher;
+
+    private LocalDate publishedDate;
+
+    @Column(name = "page_count")
+    private Integer pageCount;
+
+    private String language;
+
+    private String format;
+
     @NotEmpty(message = "Authors cannot be empty")
     @ManyToMany
     @JoinTable(
@@ -62,6 +74,10 @@ public class Book extends BaseEntity {
 
     @OneToMany(mappedBy = "book", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Copy> copies;
+
+    // Stored column managed by DB Triggers
+    @Column(name = "available_copies", nullable = false)
+    private Integer availableCopies = 0;
 
     @Version
     @Column(name = "version", nullable = false)

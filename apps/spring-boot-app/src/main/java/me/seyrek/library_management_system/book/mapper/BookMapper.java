@@ -8,10 +8,14 @@ import me.seyrek.library_management_system.book.dto.BookPatchRequest;
 import me.seyrek.library_management_system.book.dto.BookUpdateRequest;
 import me.seyrek.library_management_system.book.model.Book;
 import me.seyrek.library_management_system.category.mapper.CategoryMapper;
+import me.seyrek.library_management_system.copy.model.Copy;
+import me.seyrek.library_management_system.copy.model.CopyStatus;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {AuthorMapper.class, CategoryMapper.class})
 public interface BookMapper {
+
+    @Mapping(target = "availableLocation", expression = "java(findFirstAvailableLocation(book))")
     BookDto toBookDto(Book book);
 
     @ToBookEntity
@@ -23,4 +27,15 @@ public interface BookMapper {
     @ToBookEntity
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void patchBookFromRequest(BookPatchRequest request, @MappingTarget Book book);
+
+    default String findFirstAvailableLocation(Book book) {
+        if (book.getCopies() == null) {
+            return null;
+        }
+        return book.getCopies().stream()
+                .filter(copy -> copy.getStatus() == CopyStatus.AVAILABLE)
+                .findFirst()
+                .map(Copy::getLocation)
+                .orElse(null);
+    }
 }
