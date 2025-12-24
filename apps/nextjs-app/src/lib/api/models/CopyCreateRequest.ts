@@ -5,5 +5,6 @@
 export type CopyCreateRequest = {
     bookId: number;
     barcode: string;
+    location?: string;
 };
 

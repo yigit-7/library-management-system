@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { ApiResponseFineDto } from '../models/ApiResponseFineDto';
 import type { ApiResponsePageFineDto } from '../models/ApiResponsePageFineDto';
-import type { ApiResponseString } from '../models/ApiResponseString';
 import type { FineCreateRequest } from '../models/FineCreateRequest';
 import type { FinePatchRequest } from '../models/FinePatchRequest';
 import type { FineSearchRequest } from '../models/FineSearchRequest';
@@ -48,22 +47,6 @@ export class FineManagementControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
-        });
-    }
-    /**
-     * @param id
-     * @returns ApiResponseString OK
-     * @throws ApiError
-     */
-    public static deleteFine(
-        id: number,
-    ): CancelablePromise<ApiResponseString> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/api/management/fines/{id}',
-            path: {
-                'id': id,
-            },
         });
     }
     /**

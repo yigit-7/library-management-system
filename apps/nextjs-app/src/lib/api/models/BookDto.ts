@@ -11,6 +11,13 @@ export type BookDto = {
     description?: string;
     coverImageUrl?: string;
     price?: number;
+    publisher?: string;
+    publishedDate?: string;
+    pageCount?: number;
+    language?: string;
+    format?: string;
+    availableCopies?: number;
+    availableLocation?: string;
     authors?: Array<AuthorDto>;
     category?: CategoryDto;
 };

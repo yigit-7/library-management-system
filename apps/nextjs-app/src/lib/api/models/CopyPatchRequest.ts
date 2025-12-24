@@ -5,6 +5,7 @@
 export type CopyPatchRequest = {
     barcode?: string;
     status?: CopyPatchRequest.status;
+    location?: string;
 };
 export namespace CopyPatchRequest {
     export enum status {

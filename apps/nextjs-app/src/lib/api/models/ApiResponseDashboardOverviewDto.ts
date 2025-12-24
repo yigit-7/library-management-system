@@ -3,11 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiErrorResponse } from './ApiErrorResponse';
-export type ApiResponseString = {
+import type { DashboardOverviewDto } from './DashboardOverviewDto';
+export type ApiResponseDashboardOverviewDto = {
     success?: boolean;
     timestamp?: string;
     message?: string;
-    data?: string;
+    data?: DashboardOverviewDto;
     error?: ApiErrorResponse;
 };
 
