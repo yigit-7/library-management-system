@@ -70,7 +70,7 @@ export default async function BookPage({ params }: BookPageProps) {
     notFound()
   }
 
-  // Mock Reviews (17 items)
+  // Mock Reviews (17 items) - Reviews API is not ready yet
   const reviews = [
     { id: 1, user: "Alice M.", rating: 5, comment: "An absolute masterpiece. Must read!", date: "2 days ago" },
     { id: 2, user: "Bob D.", rating: 4, comment: "Great story but a bit slow in the middle.", date: "1 week ago" },
@@ -91,19 +91,20 @@ export default async function BookPage({ params }: BookPageProps) {
     { id: 17, user: "Quinn Q.", rating: 4, comment: "Well written.", date: "10 months ago" },
   ]
 
-  // Merge with mock data for missing fields
+  // Prepare display data
+  const publicationYear = bookData.publishedDate ? new Date(bookData.publishedDate).getFullYear().toString() : "Unknown"
+  const isAvailable = (bookData.availableCopies || 0) > 0
+  const statusDetail = isAvailable ? "Available on Shelf" : "Out of Stock"
+  const locationDisplay = isAvailable && bookData.availableLocation ? bookData.availableLocation : "Ask Librarian"
+
+  // Merge with mock data for missing fields (Rating/Reviews are not in BookDto yet)
   const book = {
     ...bookData,
-    publisher: "Penguin Random House", // Mock
-    publicationYear: "1965", // Mock
-    pageCount: 412, // Mock
-    language: "English", // Mock
-    stock: 5, // Mock
-    format: "Hardcover", // Mock
+    publicationYear,
     rating: 4.8, // Mock
-    reviewCount: reviews.length, // Updated with real count
-    location: "Block B, Floor 3, Shelf 42", // Mock Location
-    statusDetail: "Available on Shelf", // Mock Status
+    reviewCount: reviews.length, // Mock
+    statusDetail,
+    locationDisplay
   }
 
   return (
@@ -158,10 +159,12 @@ export default async function BookPage({ params }: BookPageProps) {
                 <div className="p-4 space-y-3">
                     <div className="flex items-center gap-3">
                         <Library className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{book.location}</span>
+                        <span className="font-medium">{book.locationDisplay}</span>
                     </div>
                     <div className="text-xs text-muted-foreground leading-relaxed">
-                        No reservation needed. Just walk in and grab it from the shelf!
+                        {isAvailable 
+                            ? "No reservation needed. Just walk in and grab it from the shelf!" 
+                            : "Currently unavailable. Please check back later."}
                     </div>
                 </div>
             </div>
@@ -192,9 +195,9 @@ export default async function BookPage({ params }: BookPageProps) {
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="secondary" className="px-3 py-1 text-sm">{book.category?.name || "General"}</Badge>
-                {book.stock > 0 ? (
+                {isAvailable ? (
                     <Badge variant="outline" className="px-3 py-1 text-sm border-green-500/50 text-green-600 bg-green-500/10">
-                        {book.statusDetail}
+                        {book.statusDetail} ({book.availableCopies} copies)
                     </Badge>
                 ) : (
                     <Badge variant="destructive" className="px-3 py-1 text-sm">Out of Stock</Badge>
@@ -233,7 +236,7 @@ export default async function BookPage({ params }: BookPageProps) {
                     <Building2 className="h-5 w-5 text-primary mt-0.5" />
                     <div className="flex flex-col">
                         <span className="text-sm text-muted-foreground">Publisher</span>
-                        <span className="font-medium">{book.publisher}</span>
+                        <span className="font-medium">{book.publisher || "N/A"}</span>
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -247,21 +250,21 @@ export default async function BookPage({ params }: BookPageProps) {
                     <FileText className="h-5 w-5 text-primary mt-0.5" />
                     <div className="flex flex-col">
                         <span className="text-sm text-muted-foreground">Pages</span>
-                        <span className="font-medium">{book.pageCount}</span>
+                        <span className="font-medium">{book.pageCount || "N/A"}</span>
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
                     <Globe className="h-5 w-5 text-primary mt-0.5" />
                     <div className="flex flex-col">
                         <span className="text-sm text-muted-foreground">Language</span>
-                        <span className="font-medium">{book.language}</span>
+                        <span className="font-medium">{book.language || "N/A"}</span>
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
                     <BookOpen className="h-5 w-5 text-primary mt-0.5" />
                     <div className="flex flex-col">
                         <span className="text-sm text-muted-foreground">Format</span>
-                        <span className="font-medium">{book.format}</span>
+                        <span className="font-medium">{book.format || "N/A"}</span>
                     </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -284,7 +287,7 @@ export default async function BookPage({ params }: BookPageProps) {
       <BookFloatingBar 
         title={book.title || "Book"} 
         coverUrl={book.coverImageUrl} 
-        location={book.location}
+        location={book.locationDisplay}
       />
 
       <footer className="py-6 md:px-8 md:py-0 border-t mt-auto">
