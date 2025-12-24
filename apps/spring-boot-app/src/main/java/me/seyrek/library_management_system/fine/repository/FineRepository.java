@@ -28,6 +28,8 @@ public interface FineRepository extends JpaRepository<Fine, Long>, JpaSpecificat
     // TODO: add @NamedEntityGraph for EAGER join fetch
     Optional<Fine> findById(@NonNull Long id);
 
+    long countByUserId(Long id);
+
     /*
      * Hibernate:
      * SELECT COALESCE(SUM(f.amount), 0)
