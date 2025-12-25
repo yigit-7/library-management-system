@@ -1,8 +1,18 @@
 import { JWTPayload } from "jose"
 
-export interface CustomJwtPayload extends JWTPayload {
+export type CustomJwtPayload = JWTPayload & {
   email?: string
   firstName?: string
   lastName?: string
   roles?: string[]
+}
+
+export type PageResponse<T> = {
+  content: T[];
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  }
 }
