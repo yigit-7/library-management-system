@@ -49,9 +49,12 @@ public class DashboardService {
 
                 // Operasyonel Veriler
                 loanRepository.countDueSoonLoans(threeDaysLater),
-                loanRepository.countByStatus(LoanStatus.LOST),
-                loanRepository.countByStatus(LoanStatus.RETURNED_DAMAGED),
+                copyRepository.countByStatus(CopyStatus.LOST), // Changed to CopyStatus
+                copyRepository.countByStatus(CopyStatus.MAINTENANCE), // Changed to CopyStatus (Damaged)
                 copyRepository.countByStatus(CopyStatus.AVAILABLE),
+                copyRepository.countByStatus(CopyStatus.LOANED), // New
+                copyRepository.countByStatus(CopyStatus.MAINTENANCE), // New (Same as damaged for now, or separate logic)
+                copyRepository.countByStatus(CopyStatus.RETIRED), // New
                 copyRepository.count(),
 
                 // Kullanıcı Verileri
