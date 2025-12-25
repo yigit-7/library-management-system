@@ -15,11 +15,11 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-14 items-center px-4 md:px-8 max-w-7xl">
+      <div className="container mx-auto flex h-14 items-center px-4 md:px-8 max-w-7xl relative">
         {/* Mobile Menu Trigger */}
         <MobileNav />
 
-        {/* Left: Logo (Hidden on mobile if needed, or adjusted) */}
+        {/* Left: Logo */}
         <div className="flex items-center mr-4 md:mr-8">
           <Link className="flex items-center space-x-2 group" href="/">
             <BookOpen className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors" />
@@ -29,13 +29,13 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        {/* Center: Navigation (Desktop) */}
-        <div className="flex flex-1 items-center justify-center">
+        {/* Center: Navigation (Desktop) - Absolutely positioned to stay centered regardless of side content widths */}
+        <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <MainNav />
         </div>
 
         {/* Right: Auth & Theme */}
-        <div className="flex items-center gap-2 ml-auto md:ml-8">
+        <div className="flex items-center gap-2 ml-auto">
           <ModeToggle />
           {isLoading ? (
             <div className="flex items-center gap-2">
