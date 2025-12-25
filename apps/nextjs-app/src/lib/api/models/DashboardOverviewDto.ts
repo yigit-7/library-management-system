@@ -11,6 +11,9 @@ export type DashboardOverviewDto = {
     lostBooks?: number;
     damagedBooks?: number;
     availableCopies?: number;
+    loanedCopies?: number;
+    maintenanceCopies?: number;
+    retiredCopies?: number;
     totalCopies?: number;
     newUsersLast30Days?: number;
     activeUsers?: number;
@@ -18,4 +21,3 @@ export type DashboardOverviewDto = {
     unpaidFinesAmount?: number;
     collectedFinesThisMonth?: number;
 };
-
