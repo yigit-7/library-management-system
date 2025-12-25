@@ -9,7 +9,6 @@ const protectedRoutes = [
     path: "/dashboard",
     roles: [ROLES.ADMIN, ROLES.LIBRARIAN],
   },
-  // Add more protected routes here
 ]
 
 const authRoutes = ["/login", "/register"]
@@ -21,7 +20,7 @@ export async function middleware(request: NextRequest) {
   // 1. Handle Auth Routes (Login/Register)
   if (authRoutes.includes(pathname)) {
     if (accessToken) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+      return NextResponse.redirect(new URL("/", request.url))
     }
     return NextResponse.next()
   }
@@ -47,7 +46,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/login", request.url))
       }
 
-      // Backend uses Base64 decoding for the secret key, so we must do the same.
+      // Backend uses Base64 decoding for the secret key, so do the same here
       // Convert Base64 string to Uint8Array
       const secret = Uint8Array.from(atob(secretKey), c => c.charCodeAt(0))
 

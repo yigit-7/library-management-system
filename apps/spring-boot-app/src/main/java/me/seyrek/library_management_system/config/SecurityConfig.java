@@ -42,8 +42,13 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/books/**").permitAll()
+                    .requestMatchers(
+                            "/api/auth/**",
+                            "/api/books/**",
+                            "/api/categories/**",
+                            "/api/authors/**")
+                        .permitAll()
+                    .requestMatchers("/api/loans/**").hasAnyRole("USER", "LIBRARIAN", "ADMIN")
                     .requestMatchers("/api/management/**").hasAnyRole("ADMIN", "LIBRARIAN")
                     .requestMatchers(
                             "/swagger-ui/**",

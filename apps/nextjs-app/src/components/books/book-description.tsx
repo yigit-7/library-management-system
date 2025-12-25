@@ -38,8 +38,6 @@ export function BookDescription({ description, maxLength = 500 }: BookDescriptio
         >
           {description}
         </p>
-        
-        {/* Removed the absolute overlay div in favor of mask-image for better text rendering */}
       </div>
       
       <Button 

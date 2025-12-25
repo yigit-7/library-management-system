@@ -9,6 +9,7 @@ import me.seyrek.library_management_system.category.model.Category;
 import me.seyrek.library_management_system.copy.model.Copy;
 import me.seyrek.library_management_system.copy.model.CopyStatus;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -47,7 +48,7 @@ public final class BookSpecification {
 
             // Add other filters that apply in both modes
             // These are strict filters, always applied
-            specifications.add(hasCategoryName(request.categoryName()));
+            specifications.add(hasCategoryIds(request.categoryIds()));
             specifications.add(hasMinPrice(request.minPrice()));
             specifications.add(hasMaxPrice(request.maxPrice()));
             specifications.add(hasAvailableCopies(request.available()));
@@ -86,11 +87,11 @@ public final class BookSpecification {
         };
     }
 
-    private static Specification<Book> hasCategoryName(String categoryName) {
-        if (!StringUtils.hasText(categoryName)) return null;
+    private static Specification<Book> hasCategoryIds(List<Long> categoryIds) {
+        if (CollectionUtils.isEmpty(categoryIds)) return null;
         return (root, query, cb) -> {
             Join<Book, Category> category = getOrCreateJoin(root, "category", JoinType.INNER);
-            return cb.like(cb.lower(category.get("name")), "%" + categoryName.toLowerCase() + "%");
+            return category.get("id").in(categoryIds);
         };
     }
 

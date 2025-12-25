@@ -34,8 +34,9 @@ public interface BookMapper {
         }
         return book.getCopies().stream()
                 .filter(copy -> copy.getStatus() == CopyStatus.AVAILABLE)
-                .findFirst()
                 .map(Copy::getLocation)
+                .filter(location -> location != null && !location.trim().isEmpty())
+                .findFirst()
                 .orElse(null);
     }
 }

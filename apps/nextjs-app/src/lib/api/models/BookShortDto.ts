@@ -6,5 +6,6 @@ export type BookShortDto = {
     id?: number;
     isbn?: string;
     title?: string;
+    availableCopies?: number;
 };
 

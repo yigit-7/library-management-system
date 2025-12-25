@@ -11,8 +11,10 @@ import {
   User,
   Home,
   Settings,
-  CreditCard,
-  ChevronsUpDown
+  ChevronsUpDown,
+  Barcode,
+  PenTool,
+  Tags
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -86,6 +88,24 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       visible: true,
     },
     {
+      title: "Authors",
+      url: "/dashboard/authors",
+      icon: PenTool,
+      visible: isAdmin,
+    },
+    {
+      title: "Categories",
+      url: "/dashboard/categories",
+      icon: Tags,
+      visible: isAdmin,
+    },
+    {
+      title: "Copies",
+      url: "/dashboard/copies",
+      icon: Barcode,
+      visible: true,
+    },
+    {
       title: "Loans",
       url: "/dashboard/loans",
       icon: Library,
@@ -95,7 +115,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       title: "Users",
       url: "/dashboard/users",
       icon: Users,
-      visible: isAdmin, // Only visible to ADMIN
+      visible: isAdmin,
     },
     {
       title: "Fines",
@@ -133,7 +153,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       
       <SidebarContent className="px-2">
         <SidebarMenu>
-          {menuItems.filter(item => item.visible).map((item, index) => (
+          {menuItems.filter(item => item.visible).map((item) => (
             <React.Fragment key={item.title}>
               {item.title === "Dashboard" && <SidebarSeparator className="my-2" />}
               <SidebarMenuItem>
@@ -189,17 +209,17 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

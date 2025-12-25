@@ -8,6 +8,7 @@ export type CopyDto = {
     book?: BookShortDto;
     barcode?: string;
     status?: CopyDto.status;
+    location?: string;
 };
 export namespace CopyDto {
     export enum status {

@@ -14,6 +14,9 @@ public record DashboardOverviewDto(
     long lostBooks,
     long damagedBooks,
     long availableCopies,
+    long loanedCopies,
+    long maintenanceCopies,
+    long retiredCopies,
     long totalCopies,
 
     // Kullanıcı Verileri

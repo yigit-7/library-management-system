@@ -1,13 +1,10 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FileQuestion } from "lucide-react"
-import { SiteHeader } from "@/components/layout/site-header"
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <main className="flex flex-1 flex-col items-center justify-center gap-4 text-center p-4">
+    <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 text-center p-4">
         <div className="rounded-full bg-muted p-4">
             <FileQuestion className="h-12 w-12 text-muted-foreground" />
         </div>
@@ -22,19 +19,11 @@ export default function NotFound() {
             </Link>
             </Button>
             <Button variant="outline" asChild>
-            <Link href="/dashboard">
-                Go to Dashboard
+            <Link href="/books">
+                Browse Catalog
             </Link>
             </Button>
         </div>
-      </main>
-      <footer className="py-6 md:px-8 md:py-0 border-t">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6">
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            © 2025 Library System. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }

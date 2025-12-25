@@ -8,6 +8,11 @@ export type BookPatchRequest = {
     description?: string;
     coverImageUrl?: string;
     price?: number;
+    publisher?: string;
+    publishedDate?: string;
+    pageCount?: number;
+    language?: string;
+    format?: string;
     authorIds?: Array<number>;
     categoryId?: number;
 };

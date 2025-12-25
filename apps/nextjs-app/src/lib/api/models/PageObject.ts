@@ -6,15 +6,15 @@ import type { PageableObject } from './PageableObject';
 import type { SortObject } from './SortObject';
 import type { UserDto } from './UserDto';
 export type PageObject = {
-    totalElements?: number;
     totalPages?: number;
+    totalElements?: number;
     size?: number;
     content?: Array<UserDto>;
     number?: number;
     sort?: SortObject;
+    numberOfElements?: number;
     first?: boolean;
     last?: boolean;
-    numberOfElements?: number;
     pageable?: PageableObject;
     empty?: boolean;
 };
