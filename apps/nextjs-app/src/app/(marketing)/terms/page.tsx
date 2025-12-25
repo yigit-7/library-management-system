@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
       <main className="flex-1 container max-w-3xl mx-auto py-12 md:py-24">
         <div className="space-y-8">
           <div className="space-y-2">
@@ -25,7 +24,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-2">1. Acceptance of Terms</h2>
               <p>
-                By accessing and using the Library Management System ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.
+                By accessing and using the Library Management System (&#34;the Service&#34;), you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.
               </p>
             </section>
 
@@ -65,7 +64,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-2">6. Changes to Terms</h2>
               <p>
-                We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect.
+                We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days&#39; notice prior to any new terms taking effect.
               </p>
             </section>
 

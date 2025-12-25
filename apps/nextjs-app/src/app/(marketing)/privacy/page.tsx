@@ -1,5 +1,4 @@
 import { Metadata } from "next"
-import { SiteHeader } from "@/components/layout/site-header"
 
 export const metadata: Metadata = {
   title: "Privacy Policy - Library System",
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
       <main className="flex-1 container max-w-3xl mx-auto py-12 md:py-24">
         <div className="space-y-8">
           <div className="space-y-2">

@@ -4,7 +4,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { BookControllerService } from "@/lib/api"
-import { SiteHeader } from "@/components/layout/site-header"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -109,7 +108,6 @@ export default async function BookPage({ params }: BookPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
       
       {/* Main Content Container - Consistent with SiteHeader */}
       <main className="flex-1 container mx-auto max-w-7xl py-8 px-4 md:px-8 lg:py-12">
@@ -289,14 +287,6 @@ export default async function BookPage({ params }: BookPageProps) {
         coverUrl={book.coverImageUrl} 
         location={book.locationDisplay}
       />
-
-      <footer className="py-6 md:px-8 md:py-0 border-t mt-auto">
-        <div className="container mx-auto max-w-7xl flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-8">
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            © 2025 Library System. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }
