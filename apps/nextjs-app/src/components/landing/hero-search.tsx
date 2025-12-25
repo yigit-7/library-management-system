@@ -1,45 +1,37 @@
 "use client"
 
-import * as React from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {Search} from "lucide-react"
 
 export function HeroSearch() {
+  const [query, setQuery] = useState("")
   const router = useRouter()
-  const [query, setQuery] = React.useState("")
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!query.trim()) return
-
-    const params = new URLSearchParams()
-    params.set("q", query.trim())
-    router.push(`/books?${params.toString()}`)
+    if (query.trim()) {
+      router.push(`/books?search=${encodeURIComponent(query)}`)
+    }
   }
 
   return (
-    <form 
-      onSubmit={handleSearch} 
-      className="w-full max-w-2xl mx-auto flex flex-col sm:flex-row items-center gap-3"
-    >
-      <div className="relative flex-1 w-full">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          className="h-12 sm:h-14 pl-10 text-base sm:text-lg bg-background shadow-sm"
-          placeholder="Search by Title, Author, ISBN..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+    <form onSubmit={handleSearch} className="flex w-full items-center space-x-2">
+      <div className="relative w-full">
+          <Input
+            type="search"
+            placeholder="Search by title, author, or ISBN..."
+            className="w-full pl-9 h-12 bg-background/80 backdrop-blur-sm border-primary/20 focus-visible:ring-primary/30"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <Button
-        size="lg"
-        className="h-12 sm:h-14 px-8 text-lg"
-        type="submit"
-      >
-        Search
-      </Button>
+        <Button type="submit" size="lg" className="h-12">
+            <Search className="mr-2 h-4 w-4"/>
+            Search
+        </Button>
     </form>
   )
 }

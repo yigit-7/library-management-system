@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/layout/mode-toggle"
@@ -5,10 +7,11 @@ import { UserNav } from "@/components/layout/user-nav"
 import { BookOpen } from "lucide-react"
 import { MainNav } from "@/components/layout/main-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
-import { getCurrentUser } from "@/lib/auth/auth-utils"
+import { useAuth } from "@/hooks/use-auth"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export async function SiteHeader() {
-  const user = await getCurrentUser()
+export function SiteHeader() {
+  const { user, isLoading } = useAuth()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -18,7 +21,7 @@ export async function SiteHeader() {
 
         {/* Left: Logo (Hidden on mobile if needed, or adjusted) */}
         <div className="flex items-center mr-4 md:mr-8">
-          <Link className="flex items-center space-x-2 group" href="/apps/nextjs-app/public">
+          <Link className="flex items-center space-x-2 group" href="/">
             <BookOpen className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors" />
             <span className="hidden font-bold sm:inline-block text-lg tracking-tight">
               Library System
@@ -34,7 +37,11 @@ export async function SiteHeader() {
         {/* Right: Auth & Theme */}
         <div className="flex items-center gap-2 ml-auto md:ml-8">
           <ModeToggle />
-          {user ? (
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+               <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+          ) : user ? (
             <UserNav user={user} />
           ) : (
             <>

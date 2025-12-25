@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { UserControllerService, UserDto } from "@/lib/api"
 import { OpenAPI } from "@/lib/api/core/OpenAPI"
@@ -8,6 +8,9 @@ import { logoutAction } from "@/app/actions/auth"
 import { useRouter } from "next/navigation"
 import { useApiQuery } from "@/lib/api-client/api-hooks"
 import { setupAxiosInterceptors } from "@/lib/api-client/axios-interceptor"
+
+// Set base URL immediately
+OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 interface AuthProviderProps {
   children: React.ReactNode
@@ -18,26 +21,32 @@ export function AuthProvider({ children, accessToken }: AuthProviderProps) {
   const setUser = useAuthStore((state) => state.setUser)
   const setIsLoading = useAuthStore((state) => state.setIsLoading)
   const router = useRouter()
+  
+  // Initialize loading state based on token presence immediately
+  // This prevents flickering of "Loading" state when we know there is no token
+  const initialized = useRef(false)
+  if (!initialized.current) {
+      useAuthStore.setState({ isLoading: !!accessToken, isAuthenticated: !!accessToken })
+      initialized.current = true
+  }
 
   // Setup Axios Interceptors once on mount
   useEffect(() => {
     setupAxiosInterceptors();
   }, []);
 
-  // Configure OpenAPI globally
-  // We do this in a useEffect to avoid side effects during render
-  // and to satisfy ESLint rules about immutability during render
-  useEffect(() => {
-    OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  // Wrapper function to set token just before the API call
+  const fetchProfile = () => {
     if (accessToken) {
-      OpenAPI.TOKEN = accessToken
+      OpenAPI.TOKEN = accessToken;
     }
-  }, [accessToken])
+    return UserControllerService.getMyProfile();
+  };
 
   // Use React Query to fetch the profile
   const { data: userProfile, isError, isLoading: isQueryLoading } = useApiQuery(
-    ['my-profile'],
-    UserControllerService.getMyProfile,
+    ['my-profile', accessToken], // Add accessToken to the query key
+    fetchProfile,
     [],
     {
       enabled: !!accessToken, // Only fetch if token exists
@@ -54,11 +63,9 @@ export function AuthProvider({ children, accessToken }: AuthProviderProps) {
     }
 
     if (userProfile?.data) {
-      // UserPrivateProfile and UserDto have the same structure
       setUser(userProfile.data as unknown as UserDto)
       setIsLoading(false)
     } else if (isError) {
-      console.error("AuthProvider: Failed to fetch user profile")
       setUser(null)
       setIsLoading(false)
       // If fetch fails (likely 401), logout

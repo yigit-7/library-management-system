@@ -12,7 +12,10 @@ import {
   Home,
   Settings,
   CreditCard,
-  ChevronsUpDown
+  ChevronsUpDown,
+  Barcode,
+  PenTool,
+  Tags
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -83,6 +86,24 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       title: "Books",
       url: "/dashboard/books",
       icon: Book,
+      visible: true,
+    },
+    {
+      title: "Authors",
+      url: "/dashboard/authors",
+      icon: PenTool,
+      visible: true,
+    },
+    {
+      title: "Categories",
+      url: "/dashboard/categories",
+      icon: Tags,
+      visible: true,
+    },
+    {
+      title: "Copies",
+      url: "/dashboard/copies",
+      icon: Barcode,
       visible: true,
     },
     {
