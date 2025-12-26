@@ -2,6 +2,7 @@ package me.seyrek.library_management_system.copy.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.seyrek.library_management_system.common.ApiResponse;
+import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.copy.dto.CopyDto;
 import me.seyrek.library_management_system.copy.dto.CopySearchRequest;
 import me.seyrek.library_management_system.copy.service.CopyService;
@@ -18,11 +19,12 @@ public class CopyController {
     private final CopyService copyService;
 
     @GetMapping
-    public ApiResponse<Page<CopyDto>> getAllCopies(
+    public ApiResponse<PagedData<CopyDto>> getAllCopies(
             CopySearchRequest request,
             @PageableDefault(size = 20, sort = "id") Pageable pageable
     ) {
-        return ApiResponse.success(copyService.getAllCopies(request, pageable));
+        Page<CopyDto> copies = copyService.getAllCopies(request, pageable);
+        return ApiResponse.success(PagedData.of(copies));
     }
 
     @GetMapping("/{id}")
