@@ -6,7 +6,6 @@ Library Management System is a full-stack application built with Next.js and Spr
 - **Backend:** A robust REST API built with Spring Boot that handles all the business logic of the library management system.
 - **Frontend:** A modern and responsive user interface built with Next.js.
 - **Database:** PostgreSQL is used for persistent data storage.
-- **Cache:** Redis is used for caching to improve performance.
 - **Containerization:** The entire application is containerized using Docker for easy setup and deployment.
 
 ## Getting Started
