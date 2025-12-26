@@ -14,6 +14,7 @@ import java.time.Instant;
 @Entity
 @Getter
 @Setter
+@Table(name = "fines")
 public class Fine extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

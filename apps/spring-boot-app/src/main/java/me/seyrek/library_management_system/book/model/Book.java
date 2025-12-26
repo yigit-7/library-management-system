@@ -25,6 +25,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Table(name = "books")
 public class Book extends BaseEntity {
     @NaturalId(mutable = true)
     @Column(nullable = false, unique = true)
@@ -61,7 +62,7 @@ public class Book extends BaseEntity {
     @NotEmpty(message = "Authors cannot be empty")
     @ManyToMany
     @JoinTable(
-            name = "book_author",
+            name = "book_authors",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
@@ -75,7 +76,6 @@ public class Book extends BaseEntity {
     @OneToMany(mappedBy = "book", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Copy> copies;
 
-    // Stored column managed by DB Triggers
     @Column(name = "available_copies", nullable = false)
     private Integer availableCopies = 0;
 
