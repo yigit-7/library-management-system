@@ -85,17 +85,6 @@ export default async function CatalogPage(props: CatalogPageProps) {
       <main className="flex-1 container mx-auto max-w-7xl py-8 px-4 md:px-8">
         
         <div className="flex flex-col space-y-6">
-            {/* Header */}
-            <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                    <Library className="h-8 w-8 text-primary"/>
-                    <h1 className="text-3xl font-bold tracking-tight">Library Catalog</h1>
-                </div>
-                <p className="text-muted-foreground text-lg">
-                    Discover and explore our curated collection of thousands of books.
-                </p>
-            </div>
-
             <div className="flex flex-col lg:flex-row gap-8">
                 
                 {/* Sidebar Filters (Desktop) */}
