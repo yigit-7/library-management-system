@@ -13,6 +13,7 @@ import org.hibernate.annotations.NaturalId;
 @Getter
 @Setter
 @Entity
+@Table(name = "copies")
 public class Copy extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

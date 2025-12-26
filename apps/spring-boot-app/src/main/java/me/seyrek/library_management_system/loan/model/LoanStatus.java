@@ -6,5 +6,6 @@ public enum LoanStatus {
     RETURNED,
     RETURNED_OVERDUE,
     RETURNED_DAMAGED,
-    LOST
+    LOST,
+    CANCELLED
 }

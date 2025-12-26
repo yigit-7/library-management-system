@@ -15,10 +15,10 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(indexes = {
-        @Index(name = "idx_loan_user", columnList = "user_id"),
-        @Index(name = "idx_loan_copy", columnList = "copy_id"),
-        @Index(name = "idx_loan_active", columnList = "return_date")
+@Table(name = "loans", indexes = {
+        @Index(name = "idx_loans_user", columnList = "user_id"),
+        @Index(name = "idx_loans_copy", columnList = "copy_id"),
+        @Index(name = "idx_loans_active", columnList = "return_date")
 })
 public class Loan extends BaseEntity {
 
