@@ -5,10 +5,8 @@
 *.bat text eol=crlf
 *.cmd text eol=crlf
 
-# Bu klasörlerin içindeki her şeyi dil istatistiklerine dahil et
-apps/spring-boot/** linguist-detectable=true
-apps/nextjs/** linguist-detectable=true
+apps/spring-boot-app/** linguist-detectable=true
+apps/nextjs-app/** linguist-detectable=true
 
-# Eğer klasörler hala görünmüyorsa "vendored" (hazır kütüphane) olmadıklarını belirtin
-apps/spring-boot/** linguist-vendored=false
-apps/nextjs/** linguist-vendored=false
+apps/spring-boot-app/** linguist-vendored=false
+apps/nextjs-app/** linguist-vendored=false
