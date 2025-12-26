@@ -2,6 +2,7 @@ package me.seyrek.library_management_system.fine.controller;
 
 import jakarta.validation.Valid;
 import me.seyrek.library_management_system.common.ApiResponse;
+import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.fine.dto.*;
 import me.seyrek.library_management_system.fine.service.FineService;
 import org.springframework.data.domain.Page;
@@ -24,11 +25,12 @@ public class FineManagementController {
     }
 
     @GetMapping
-    public ApiResponse<Page<FineDto>> getAllFines(
+    public ApiResponse<PagedData<FineDto>> getAllFines(
             FineSearchRequest request,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ApiResponse.success(fineService.getAllFines(request, pageable));
+        Page<FineDto> fines = fineService.getAllFines(request, pageable);
+        return ApiResponse.success(PagedData.of(fines));
     }
 
     @GetMapping("/{id}")

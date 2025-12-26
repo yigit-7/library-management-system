@@ -3,6 +3,7 @@ package me.seyrek.library_management_system.fine.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.seyrek.library_management_system.common.ApiResponse;
+import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.fine.dto.FineDto;
 import me.seyrek.library_management_system.fine.dto.FineUserSearchRequest;
 import me.seyrek.library_management_system.fine.service.FineService;
@@ -24,11 +25,12 @@ public class FineController {
 
     // TODO: fineStatus, bookTitle parametreleri yeterli olacaktır
     @GetMapping("/my-fines")
-    public ApiResponse<Page<FineDto>> getMyFines(
+    public ApiResponse<PagedData<FineDto>> getMyFines(
             FineUserSearchRequest request,
             @PageableDefault(size = 20, sort = "fineDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ApiResponse.success(fineService.getMyFines(SecurityUtils.getCurrentUserId(), request, pageable));
+        Page<FineDto> fines = fineService.getMyFines(SecurityUtils.getCurrentUserId(), request, pageable);
+        return ApiResponse.success(PagedData.of(fines));
     }
 
     @PostMapping("/{id}/pay")

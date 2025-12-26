@@ -2,6 +2,7 @@ package me.seyrek.library_management_system.loan.controller;
 
 import jakarta.validation.Valid;
 import me.seyrek.library_management_system.common.ApiResponse;
+import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.loan.dto.*;
 import me.seyrek.library_management_system.loan.service.LoanService;
 import org.springframework.data.domain.Page;
@@ -23,11 +24,12 @@ public class LoanManagementController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
-    public ApiResponse<Page<LoanDto>> getAllLoans(
+    public ApiResponse<PagedData<LoanDto>> getAllLoans(
             LoanSearchRequest request,
             @PageableDefault(size = 20, sort = "loanDate") Pageable pageable
     ) {
-        return ApiResponse.success(loanService.getAllLoans(request, pageable));
+        Page<LoanDto> loans = loanService.getAllLoans(request, pageable);
+        return ApiResponse.success(PagedData.of(loans));
     }
 
     @GetMapping("/{id}")

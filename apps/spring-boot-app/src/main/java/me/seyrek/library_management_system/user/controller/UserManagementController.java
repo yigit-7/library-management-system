@@ -3,6 +3,7 @@ package me.seyrek.library_management_system.user.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.seyrek.library_management_system.common.ApiResponse;
+import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.user.dto.*;
 import me.seyrek.library_management_system.user.service.UserService;
 import org.springframework.data.domain.Page;
@@ -22,11 +23,12 @@ public class UserManagementController {
     // TODO: add UserSearchRequest for filtering
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<Page<UserDto>> getAllUsers(
+    public ApiResponse<PagedData<UserDto>> getAllUsers(
             @PageableDefault(size = 20, sort = "id")
             Pageable pageable
     ) {
-        return ApiResponse.success(userService.findAllUsers(pageable));
+        Page<UserDto> users = userService.findAllUsers(pageable);
+        return ApiResponse.success(PagedData.of(users));
     }
 
     @PostMapping

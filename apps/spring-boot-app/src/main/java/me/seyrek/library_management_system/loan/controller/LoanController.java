@@ -2,7 +2,7 @@ package me.seyrek.library_management_system.loan.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.seyrek.library_management_system.common.ApiResponse;
-import me.seyrek.library_management_system.loan.dto.LoanDetailDto;
+import me.seyrek.library_management_system.common.PagedData;
 import me.seyrek.library_management_system.loan.dto.LoanUserSearchRequest;
 import me.seyrek.library_management_system.loan.dto.LoanUserSummaryDto;
 import me.seyrek.library_management_system.loan.service.LoanService;
@@ -22,10 +22,11 @@ public class LoanController {
     private final LoanService loanService;
 
     @GetMapping("/my-loans")
-    public ApiResponse<Page<LoanUserSummaryDto>> getMyLoans(
+    public ApiResponse<PagedData<LoanUserSummaryDto>> getMyLoans(
             LoanUserSearchRequest request,
             @PageableDefault(size = 20, sort = "loanDate") Pageable pageable
     ) {
-        return ApiResponse.success(loanService.getMyLoans(SecurityUtils.getCurrentUserId(), request, pageable));
+        Page<LoanUserSummaryDto> loans = loanService.getMyLoans(SecurityUtils.getCurrentUserId(), request, pageable);
+        return ApiResponse.success(PagedData.of(loans));
     }
 }
