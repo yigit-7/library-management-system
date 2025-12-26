@@ -70,7 +70,7 @@ export default async function Home() {
             <div className="container relative z-10 px-4 md:px-6 mx-auto max-w-5xl text-center">
                 <div className="flex flex-col items-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
 
-                    <Badge variant="secondary" className="text-sm font-medium px-4 py-1.5 backdrop-blur-md bg-background/50 border-primary/20 rounded-full">
+                    <Badge variant="secondary" className="text-sm font-medium px-4 py-1.5 backdrop-blur-md bg-background/50 border-primary/20 rounded-full hover:cursor-default">
                         {user ? `Welcome back, ${user.firstName}!` : "Welcome to the Future of Libraries"}
                     </Badge>
 

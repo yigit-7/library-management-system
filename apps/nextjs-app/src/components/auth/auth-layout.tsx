@@ -54,7 +54,7 @@ export function AuthLayout({
             <div className="select-none">
             <blockquote className="relative overflow-hidden rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 p-5 shadow-xl">
                 <div className="relative z-10 space-y-2">
-                    <p className="text-base font-medium leading-snug text-white/90 drop-shadow-sm italic">
+                    <p className="text-base font-medium leading-snug text-white/90 drop-shadow-sm">
                     &ldquo;{quote}&rdquo;
                     </p>
                     <footer className="flex items-center gap-2 pt-1">

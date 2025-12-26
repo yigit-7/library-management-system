@@ -45,8 +45,8 @@ export function BookSearch() {
         type="search"
         placeholder="Search books by title, author, ISBN..."
         className={cn(
-          "w-full pl-9 h-10 [&::-webkit-search-cancel-button]:hidden", 
-          query && "pr-10"
+          "w-full pl-9 h-9 [&::-webkit-search-cancel-button]:hidden", 
+          query && "pr-9"
         )}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -55,7 +55,7 @@ export function BookSearch() {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-0 top-0 h-10 w-10 hover:bg-transparent"
+          className="absolute right-0 top-0 h-9 w-9 hover:bg-transparent"
           onClick={() => setQuery("")}
         >
           <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
